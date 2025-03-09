@@ -5,7 +5,7 @@
 
 <h1>Student Registration Form</h1>
 
-<form action="/webtech/quickquiz/views/action_page.php" method="GET">
+<form action="/webtech/quickquiz/views/action_page.php" method="POST">
  <fieldset>
   <legend>Personal Information</legend><br>
 
