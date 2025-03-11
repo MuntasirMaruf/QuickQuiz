@@ -14,22 +14,22 @@
           
           <div class="input_box">
             <label for="fname">First name:</label>
-            <input type="text" id="fname" name="fname" value="John"><br><br>
+            <input type="text" id="fname" name="fname" placeholder="Enter first name"><br><br>
           </div>
 
           <div class="input_box">
             <label for="lname">Last name:</label>
-            <input type="text" id="lname" name="lname" value="Doe"><br><br>
+            <input type="text" id="lname" name="lname" placeholder="Enter last name"><br><br>
           </div>
           
           <div class="input_box">
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" value="john@email.com"><br><br>
+            <input type="email" id="email" name="email" placeholder="Enter email"><br><br>
           </div>
           
           <div class="input_box">
             <label for="birthday">Birthday:</label>
-            <input type="date" id="birthday" name="birthday" value="3-6-2025"><br><br>
+            <input type="date" id="birthday" name="birthday" ><br><br>
           </div>
 
           <div class="gender_box">
@@ -58,7 +58,7 @@
 
           <div class="input_box">
             <label for="school">School/College:</label>
-            <input type="text" id="school" name="school" value="Null"><br><br>
+            <input type="text" id="school" name="school" placeholder="ABC High School"><br><br>
           </div>
 
           <div class="option_box">
@@ -80,12 +80,12 @@
 
             <div class="input_box">
               <label for="password">Create password:</lable>
-              <input type="password" id="password" name="password" value=1234><br><br>
+              <input type="password" id="password" name="password" placeholder="Create a new password"><br><br>
             </div>
             
             <div class="input_box">
               <label for="re_password">Confirm password:</lable>
-              <input type="password" id="re_password" name="re_password" value=1234><br><br>
+              <input type="password" id="re_password" name="re_password" placeholder="Re-type the password"><br><br>
             </div>
             
             <div class="input_box">
