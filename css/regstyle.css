@@ -29,7 +29,7 @@ body {
 
     color: white;
     border-radius: 10px;
-    padding:30px 40px;
+    padding:30px 40px; /* Top-Bottom Left-Right */
 }
 
 .wrapper h1 {
@@ -38,10 +38,10 @@ body {
 }
 
 .wrapper .input_box {
-    position: relative;
+    position: reslative;
     width: 100%;
     height: 50px;
-    margin: 30px 0;
+    margin: 30px 0px; /* Top-Bottom Left-Right */
 }
 
 .input_box input {
@@ -70,8 +70,9 @@ body {
 
 .gender_option {
     display: flex;
+    position: relative;
     justify-content: space-between;
-    margin: 20px 0;
+    margin: 20px 20px;
 }
 
 .gender {
@@ -96,17 +97,17 @@ body {
     background-color: white;
 }
 
-.gender input:checked::before {
+/* .gender input:checked::before {
     content: "";
     width: 8px;
     height: 8px;
-    background: black;
+    background: rgb(0, 0, 0);
     border-radius: 50%;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-}
+} */
 
 .gender label {
     color: white;
@@ -202,4 +203,13 @@ body {
 .have_account p a:hover {
     text-decoration: underline;
     color:#1d92dd;
+}
+
+span.i_block {
+    display: inline-block;
+    width: 80px;
+    height: 30px;
+    padding: 5px;
+    border: 1px solid rgb(255, 255, 255);    
+    background-color: transparent;
 }

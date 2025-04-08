@@ -3,12 +3,13 @@
     <head>
         <title>Student Registration</title>
         <link rel="stylesheet" href="../css/regstyle.css">
+        <script src="../js/myjs.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
 
     <body>
         <div class="wrapper">
-            <form action="/webtech/quickquiz/views/action_page.php" method="POST" >
+            <form action="/webtech/quickquiz/views/home.php" method="POST" >
                 <h1>Create a new account</h1>
 
                 <div class="input_box">
@@ -60,10 +61,9 @@
                 <button type="submit" class="btn">Register</button>
 
                 <div class="have_account">
-                    <p>Already have an account? <a href="#">Sing in</a> </p>
+                    <p>Already have an <span class="i_block">account</span>? <a href="#">Sing in</a> </p>
                 </div>
             </form>
         </div>
-        <img src="img_girl.jpg" style="max-width:100%;height:auto;">
     </body>
 </html>
