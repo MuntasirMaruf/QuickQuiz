@@ -3,21 +3,21 @@
     <head>
         <title>Student Registration</title>
         <link rel="stylesheet" href="../css/regstyle.css">
-        <script src="../js/myjs.js"></script>
+        <script src="../js/validation.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
 
     <body>
         <div class="wrapper">
-            <form action="/webtech/quickquiz/views/home.php" method="POST" >
+            <form name="signupform" action="/webtech/quickquiz/views/home.php" method="POST" >
                 <h1>Create a new account</h1>
 
                 <div class="input_box">
-                    <input type="text" id="username" name="username" placeholder="Student Name" required>
+                    <input type="text" id="username" name="username" placeholder="Student Name">
                 </div>
 
                 <div class="input_box">
-                    <input type="text" id="email" name="email" placeholder="Email" required>
+                    <input type="text" id="email" name="email" placeholder="Email">
                 </div>
 
                 <div class="input_box">
@@ -51,14 +51,14 @@
                 </div>
 
                 <div class="input_box">
-                    <input type="password" id="password" name="password" placeholder="Password" required>
+                    <input type="password" id="password" name="password" placeholder="Password">
                 </div>
 
                 <div class="input_box">
-                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password">
                 </div>
 
-                <button type="submit" class="btn">Register</button>
+                <button type="submit" class="btn" onclick="return validateInput()">Register</button>
 
                 <div class="have_account">
                     <p>Already have an <span class="i_block">account</span>? <a href="#">Sing in</a> </p>

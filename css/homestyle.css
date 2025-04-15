@@ -11,15 +11,10 @@
     position: fixed;
     max-width: 300px;
     height: auto;
-    z-index: -1;  /* -1 = background, 0 = foreground*/
+    z-index: 0;  /* -1 = background, 0 = foreground*/
   }
 
-  .img_about1 {
-    position: relative;
-    max-width: 300px;
-    height: auto;
-    z-index: 0;
-  }
+
 
   input {
     padding: 5px;
