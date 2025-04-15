@@ -3,14 +3,14 @@ function validateInput() {
     const username = form["username"].value.trim();
     const email = form["email"].value.trim();
     const birthday = form["birthday"].value;
-    const gender = form["gender"].value;
+    const gender = document.querySelector('input[name="gender"]:checked');
     const course = form["course"].value;
     const password = form["password"].value;
     const confirmPassword = form["confirm_password"].value;
 
     const namePattern = /^[a-zA-Z\s\.\-']+$/;
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
     let errorMessages = [];
 
@@ -30,20 +30,26 @@ function validateInput() {
         document.getElementById("email").style.border = "2px solid rgba(255, 255, 255, 0.2)";
     }
 
-    if (birthday === "" || !isAgeAbove12(birthday)) {
+    if (birthday === "" || !isValidAge(birthday)) {
         if (birthday === "") {
             errorMessages.push("Please select your birthdate.");
             document.getElementById("birthday").style.borderColor = "red";
-        } else if (!isAgeAbove12(birthday)) {
+        } else if (!isValidAge(birthday)) {
             errorMessages.push("You must be at least 13 years old to register.");
             document.getElementById("birthday").style.borderColor = "red";
         }
     }
+    else {
+        document.getElementById("birthday").style.borderColor = "white";
+    }
 
-    // if (!gender) {
-    //     errorMessages.push("Please select your gender.");
-    //     document.getElementById("gender").style.borderColor = "red";
-    // }
+    if (!gender) {
+        errorMessages.push("Please select your gender.");
+        document.getElementById("gender_box").style.color = "red";
+    }
+    else {
+        document.getElementById("gender_box").style.color = "white";
+    }
 
     if (course === "") {
         errorMessages.push("Please select a course.");
@@ -78,17 +84,22 @@ function validateInput() {
     }
 }
 
-function isAgeAbove12(birthday) {
-    const birthDate = new Date(birthday);
+function validateForm() {
+    if (validateInput() != true) {
+        console.log("False");
+        return false;
+    }
+}
+
+function isValidAge(birthday) {
+    const birthDate = new Date(birthday); 
     const today = new Date();
 
     let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    const dayDiff = today.getDate() - birthDate.getDate();
-
-    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
-        age--;
+    console.log(age);
+    if (age > 12) {
+        return true;
     }
 
-    return age >= 13;
+    return false;
 }

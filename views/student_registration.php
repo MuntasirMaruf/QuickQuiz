@@ -9,7 +9,7 @@
 
     <body>
         <div class="wrapper">
-            <form name="signupform" action="/webtech/quickquiz/views/home.php" method="POST" >
+            <form name="signupform" action="/webtech/quickquiz/views/home.php" method="POST">
                 <h1>Create a new account</h1>
 
                 <div class="input_box">
@@ -24,7 +24,7 @@
                     <input type="date" id="birthday" name="birthday" style="width:99%">
                 </div>
 
-                <div class="gender_option">
+                <div class="gender_option" id="gender_box">
                     <p>Gender:</p>
                     <div class="gender">
                         <input type="radio" id="gender_male" name="gender" value="Male"/>
@@ -41,7 +41,7 @@
                 </div>
 
                 <div class="option_box">
-                    <select name="course" id="course" style="width:100%">
+                    <select name="course" id="course">
                         <option value="" disabled selected>Select Course</option>
                         <option value="ssc">SSC Preparation</option>
                         <option value="hsc">HSC Preparation</option>
@@ -58,7 +58,7 @@
                     <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password">
                 </div>
 
-                <button type="submit" class="btn" onclick="return validateInput()">Register</button>
+                <button type="submit" class="btn" onclick="return validateForm()">Register</button>
 
                 <div class="have_account">
                     <p>Already have an <span class="i_block">account</span>? <a href="#">Sing in</a> </p>
