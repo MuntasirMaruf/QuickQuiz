@@ -15,13 +15,22 @@
                 <div class="input_box">
                     <input type="text" id="username" name="username" placeholder="Student Name">
                 </div>
+                <div class="error_msg" id="error_username">
+                    <p></p>
+                </div>
 
                 <div class="input_box">
                     <input type="text" id="email" name="email" placeholder="Email">
                 </div>
+                <div class="error_msg" id="error_email">
+                    <p></p>
+                </div>
 
                 <div class="input_box">
                     <input type="date" id="birthday" name="birthday" style="width:99%">
+                </div>
+                <div class="error_msg" id="error_birthday">
+                    <p></p>
                 </div>
 
                 <div class="gender_option" id="gender_box">
@@ -39,6 +48,9 @@
                         <label for="gender_others">Others</label>
                     </div>
                 </div>
+                <div class="error_msg" id="error_gender">
+                    <p></p>
+                </div>
 
                 <div class="option_box">
                     <select name="course" id="course">
@@ -49,13 +61,22 @@
                         <option value="medical">Medical Preparation</option>
                     </select>
                 </div>
+                <div class="error_msg" id="error_course">
+                    <p></p>
+                </div>
 
                 <div class="input_box">
                     <input type="password" id="password" name="password" placeholder="Password">
                 </div>
+                <div class="error_msg" id="error_password">
+                    <p></p>
+                </div>
 
                 <div class="input_box">
                     <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password">
+                </div>
+                <div class="error_msg" id="error_confirm">
+                    <p></p>
                 </div>
 
                 <button type="submit" class="btn" onclick="return validateForm()">Register</button>
