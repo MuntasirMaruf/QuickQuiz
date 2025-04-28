@@ -3,13 +3,13 @@
     <head>
         <title>Student Registration</title>
         <link rel="stylesheet" href="../css/regstyle.css">
-        <script src="../js/validation.js"></script>
+        <!-- <script src="../js/validation.js"></script> -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
 
     <body>
         <div class="wrapper">
-            <form name="signupform" action="/webtech/quickquiz/views/home.php" onsubmit="return validateInput()" method="POST">
+            <form name="signupform" action="/webtech/quickquiz/views/action_page.php" onsubmit="return validateInput()" method="POST">
                 <h1>Create a new account</h1>
 
                 <table>
@@ -126,3 +126,75 @@
         </div>
     </body>
 </html>
+
+<?php
+
+$error = 0;
+$username = $email = $birthday = $gender = $course = $password = $confirm_password = "";
+
+// Handle POST request
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    // Fetch and sanitize input
+    $username = trim($_POST["username"] ?? '');
+    $email = trim($_POST["email"] ?? '');
+    $birthday = $_POST["birthday"] ?? '';
+    $gender = $_POST["gender"] ?? '';
+    $course = $_POST["course"] ?? '';
+    $password = $_POST["password"] ?? '';
+    $confirm_password = $_POST["confirm_password"] ?? '';
+
+    $namePattern = "/^[a-zA-Z\s\.\-']+$/";
+    $emailPattern = "/^[^\s@]+@[^\s@]+\.[^\s@]+$/";
+    $passwordPattern = "/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/";
+
+    if (empty($username) || !preg_match($namePattern, $username)) {
+        echo "Please enter a valid name.";
+        $error++;
+    }
+
+    if (empty($email) || !preg_match($emailPattern, $email)) {
+        echo "Please enter a valid email address.";
+        $error++;
+    }
+
+    if (empty($birthday)) {
+        echo "Please select your birthdate.";
+        $error++;
+    } else {
+        $birthDate = new DateTime($birthday);
+        $today = new DateTime();
+        $age = $today->diff($birthDate)->y;
+
+        if ($age < 13) {
+            echo "You must be at least 13 years old to register.";
+            $error++;
+        }
+    }
+
+    if (empty($gender)) {
+        echo "Please select your gender.";
+        $error++;
+    }
+
+    if (empty($course)) {
+        echo "Please select a course.";
+        $error++;
+    }
+
+    if (strlen($password) < 8 || !preg_match($passwordPattern, $password)) {
+        echo "Password must have at least one letter, one digit, one special character and at least 8 characters total.";
+        $error++;
+    }
+
+    if ($password !== $confirm_password) {
+        echo "Passwords do not match.";
+        $error++;
+    }
+
+    if ($error == 0) {
+        echo "<h2>Registration Successful!</h2>";
+        echo "<p>Welcome, " . htmlspecialchars($username) . "!</p>";
+    }
+}
+?>
