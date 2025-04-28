@@ -9,30 +9,45 @@
 
     <body>
         <div class="wrapper">
-            <form name="signupform" action="/webtech/quickquiz/views/home.php" method="POST">
+            <form name="signupform" action="/webtech/quickquiz/views/home.php" onsubmit="return validateInput()" method="POST">
                 <h1>Create a new account</h1>
 
+                <table>
+                <tr>
+                <td>
                 <div class="input_box">
                     <input type="text" id="username" name="username" placeholder="Student Name">
                 </div>
                 <div class="error_msg" id="error_username">
                     <p></p>
                 </div>
+                </td>
+                </tr>
 
+                <tr>
+                <td>
                 <div class="input_box">
                     <input type="text" id="email" name="email" placeholder="Email">
                 </div>
                 <div class="error_msg" id="error_email">
                     <p></p>
                 </div>
+                </td>
+                </tr>
 
+                <tr>
+                <td>
                 <div class="input_box">
                     <input type="date" id="birthday" name="birthday" style="width:99%">
                 </div>
                 <div class="error_msg" id="error_birthday">
                     <p></p>
                 </div>
+                </td>
+                </tr>
 
+                <tr>
+                <td>
                 <div class="gender_option" id="gender_box">
                     <p>Gender:</p>
                     <div class="gender">
@@ -51,7 +66,11 @@
                 <div class="error_msg" id="error_gender">
                     <p></p>
                 </div>
+                </td>
+                </tr>
 
+                <tr>
+                <td>
                 <div class="option_box">
                     <select name="course" id="course">
                         <option value="" disabled selected>Select Course</option>
@@ -64,26 +83,45 @@
                 <div class="error_msg" id="error_course">
                     <p></p>
                 </div>
+                </td>
+                </tr>
 
+                <tr>
+                <td>
                 <div class="input_box">
                     <input type="password" id="password" name="password" placeholder="Password">
                 </div>
                 <div class="error_msg" id="error_password">
                     <p></p>
                 </div>
+                </td>
+                </tr>
 
+                <tr>
+                <td>
                 <div class="input_box">
                     <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password">
                 </div>
                 <div class="error_msg" id="error_confirm">
                     <p></p>
                 </div>
+                </td>
+                </tr>
 
-                <button type="submit" class="btn" onclick="return validateForm()">Register</button>
+                <tr>
+                <td>
+                <button type="submit" class="btn">Register</button>
+                </td>
+                </tr>
 
+                <tr>
+                <td>
                 <div class="have_account">
                     <p>Already have an <span class="i_block">account</span>? <a href="#">Sing in</a> </p>
                 </div>
+                </td>
+                </tr>
+                </table>
             </form>
         </div>
     </body>

@@ -18,6 +18,7 @@ function validateInput() {
         errorMessages.push("Please enter a valid name.");
         document.getElementById("username").style.border = "2px solid rgba(232, 18, 18, 1)";
         document.getElementById("error_username").innerHTML = "Please enter a valid name.";
+        
     }
     else {
         document.getElementById("username").style.border = "2px solid rgba(255, 255, 255, 0.2)";
@@ -83,7 +84,7 @@ function validateInput() {
     if (password !== confirmPassword) {
         errorMessages.push("Passwords do not match.");
         document.getElementById("confirm_password").style.border = "2px solid rgba(232, 18, 18, 1)";
-        document.getElementById("error_confirm").innerHTML = "Passwords do not match.";
+        document.getElementById("error_confirm").innerHTML = "Passwords didn't match.";
     }
     else {
         document.getElementById("confirm_password").style.border = "2px solid rgba(255, 255, 255, 0.2)";
@@ -96,13 +97,6 @@ function validateInput() {
     }
     else {
         return true;
-    }
-}
-
-function validateForm() {
-    if (validateInput() != true) {
-        console.log("False");
-        return false;
     }
 }
 

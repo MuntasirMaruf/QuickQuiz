@@ -36,8 +36,12 @@ body {
     text-align: center;
 }
 
+table {
+    width: 100%;
+}
+
 .wrapper .input_box {
-    position: reslative;
+    position: relative;
     width: 100%;
     height: 50px;
     /* margin: 30px 0px; Top-Bottom Left-Right */
@@ -72,7 +76,7 @@ body {
     display: flex;
     position: relative;
     justify-content: space-between;
-    margin: 20px 20px;
+    margin: 30px 20px 0px 20px; /*top right bottom left*/
 }
 
 .gender {
@@ -124,7 +128,7 @@ body {
 .wrapper .option_box {
     position: relative;
     width: 100%;
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
 .option_box select {
@@ -175,7 +179,7 @@ body {
     cursor: pointer;
     font-size: 16px;
     font-weight: 600;
-    margin-top: 60px;
+    margin-top: 30px;
 }
 
 .wrapper .btn:hover {
