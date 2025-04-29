@@ -1,5 +1,3 @@
-<h1>Hello! This is the action_page</h> <br>
-
 <?php
 $error = 0;
 $username = $email = $birthday = $gender = $course = $password = $confirm_password = "";
