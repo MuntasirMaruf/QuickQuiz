@@ -1,46 +1,42 @@
-<?php
-include "../controls/action_page.php"
-?>
 <!DOCTYPE html>
 <html>
     <head>
         <title>Student Registration</title>
         <link rel="stylesheet" href="../css/regstyle.css">
-        <!-- <script src="../js/validation.js"></script> -->
+        <script src="../js/validation.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
 
     <body>
         <div class="wrapper">
-            <!-- <form name="signupform" action="/webtech/quickquiz/controls/action_page.php" onsubmit="return validateInput()" method="POST"> -->
-            <form name="signupform" action=""  method="POST">
+            <form name="signupform" action="/webtech/quickquiz/controls/action_page.php" onsubmit="return validateInput()" method="POST">
                 <h1>Create a new account</h1>
 
                 <table>
                     <tr>
                         <td>
                             <div class="input_box">
-                                <input type="text" id="username" name="username" placeholder="Student Name" value="<?php echo $username; ?>">
+                                <input type="text" id="username" name="username" placeholder="Student Name">
                             </div>
-                            <p class="error_msg" id="error_username"><?php echo $username_error; ?></p>
+                            <p class="error_msg" id="error_username"></p>
                         </td>
                     </tr>
 
                     <tr>
                         <td>
                             <div class="input_box">
-                                <input type="text" id="email" name="email" placeholder="Email" value="<?php echo $email; ?>">
+                                <input type="text" id="email" name="email" placeholder="Email">
                             </div>
-                            <p class="error_msg" id="error_email"><?php echo $email_error; ?></p>
+                            <p class="error_msg" id="error_email"></p>
                         </td>
                     </tr>
 
                     <tr>
                         <td>
                             <div class="input_box">
-                                <input type="date" id="birthday" name="birthday" style="width:99%" value="<?php echo $birthday; ?>">
+                                <input type="date" id="birthday" name="birthday" style="width:99%">
                             </div>
-                            <p class="error_msg" id="error_birthday"><?php echo $birthday_error; ?></p>
+                            <p class="error_msg" id="error_birthday"></p>
                         </td>
                     </tr>
 
@@ -49,19 +45,19 @@ include "../controls/action_page.php"
                             <div class="gender" id="gender_box">
                                 <p>Gender:</p>
                                 <div class="gender_option">
-                                    <input type="radio" id="gender_male" name="gender" value="Male" <?php if ($gender == "Male") echo "checked"; ?>/>
+                                    <input type="radio" id="gender_male" name="gender" value="Male"/>
                                     <label for="gender_male">Male</label>
                                 </div>
                                 <div class="gender_option">
-                                    <input type="radio" id="gender_female" name="gender" value="Female" <?php if ($gender == "Female") echo "checked"; ?>/>
+                                    <input type="radio" id="gender_female" name="gender" value="Female"/>
                                     <label for="gender_female">Female</label>
                                 </div>
                                 <div class="gender_option">
-                                    <input type="radio" id="gender_others" name="gender" value="Others" <?php if ($gender == "Others") echo "checked"; ?>/>
+                                    <input type="radio" id="gender_others" name="gender" value="Others"/>
                                     <label for="gender_others">Others</label>
                                 </div>
                             </div>
-                            <p class="error_msg" id="error_gender"><?php echo $gender_error; ?></p>
+                            <p class="error_msg" id="error_gender"></p>
                         </td>
                     </tr>
 
@@ -70,31 +66,31 @@ include "../controls/action_page.php"
                             <div class="option_box">
                                 <select name="course" id="course">
                                     <option value="" disabled selected>Select Course</option>
-                                    <option value="ssc" <?php if ($course == "ssc") echo "selected"; ?>>SSC Preparation</option>
-                                    <option value="hsc" <?php if ($course == "hsc") echo "selected"; ?>>HSC Preparation</option>
-                                    <option value="engnieering" <?php if ($course == "engnieering") echo "selected"; ?>>Engnieering Preparation</option>
-                                    <option value="medical" <?php if ($course == "medical") echo "selected"; ?>>Medical Preparation</option>
+                                    <option value="ssc">SSC Preparation</option>
+                                    <option value="hsc">HSC Preparation</option>
+                                    <option value="engnieering">Engnieering Preparation</option>
+                                    <option value="medical">Medical Preparation</option>
                                 </select>
                             </div>
-                            <p class="error_msg" id="error_course"><?php echo $course_error; ?></p>
+                            <p class="error_msg" id="error_course"></p>
                         </td>
                     </tr>
 
                     <tr>
                         <td>
                             <div class="input_box">
-                                <input type="password" id="password" name="password" placeholder="Password" value="<?php echo $password; ?>">
+                                <input type="password" id="password" name="password" placeholder="Password">
                             </div>
-                            <p class="error_msg" id="error_password"><?php echo $password_error; ?></p>
+                            <p class="error_msg" id="error_password"></p>
                         </td>
                     </tr>
 
                     <tr>
                         <td>
                             <div class="input_box">
-                                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password" value="<?php echo $confirm_password; ?>">
+                                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm Password">
                             </div>
-                            <p class="error_msg" id="error_confirm"><?php echo $confirm_password_error; ?></p>
+                            <p class="error_msg" id="error_confirm"></p>
                         </td>
                     </tr>
 

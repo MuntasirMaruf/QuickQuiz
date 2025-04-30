@@ -18,7 +18,6 @@ function validateInput() {
         errorMessages.push("Please enter a valid name.");
         document.getElementById("username").style.border = "2px solid rgba(232, 18, 18, 1)";
         document.getElementById("error_username").innerHTML = "Please enter a valid name.";
-        
     }
     else {
         document.getElementById("username").style.border = "2px solid rgba(255, 255, 255, 0.2)";
