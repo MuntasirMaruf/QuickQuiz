@@ -4,7 +4,7 @@ $username = $email = $birthday = $gender = $course = $password = $confirm_passwo
 $username_error = $email_error = $birthday_error = $gender_error = $course_error = $password_error = $confirm_password_error = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = trim($_POST["username"] ?? '');
+    $username = trim($_POST["username"] ?? ''); // null coalescing operator (if $_POST["username"] is null then '' )
     $email = trim($_POST["email"] ?? '');
     $birthday = $_POST["birthday"] ?? '';
     $gender = $_POST["gender"] ?? '';
