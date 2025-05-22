@@ -18,7 +18,7 @@ $gender = $studentDetails['Gender'];
 $course = $studentDetails['Course'];
 $password = $studentDetails['Password'];
 
-$username_error = $email_error = $birthday_error = $gender_error = $course_error = $password_error = $confirm_password_error = "";
+$username_error = $email_error = $birthday_error = $gender_error = $password_error = $confirm_password_error = "";
 
 $server_msg = "";
 
@@ -29,7 +29,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST["email"] ?? '');
     $birthday = $_POST["birthday"] ?? '';
     $gender = $_POST["gender"] ?? '';
-    $course = $_POST["course"] ?? '';
     $password = $_POST["password"] ?? '';
     $confirm_password = $_POST["confirm_password"] ?? '';
 
@@ -68,35 +67,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $count++;
         }
     
-        if (empty($course)) {
-            $course_error = "Please select a course.";
-            $count++;
-        }
-    
         if (strlen($password) < 8 || !preg_match($passwordPattern, $password)) {
             $password_error = "Password must have at least one letter, one digit, one special character and at least 8 characters total.";
             $count++;
         }
     
         if ($password !== $confirm_password) {
-            $confirm_password_error = "Passwords didn't match.";
+            $confirm_password_error = "Please confirm the password to update your info.";
             $count++;
         }
 
         if($count == 0){
             $conn = openConnection();
-            $server_msg = updateStudent($conn, $username, $email, $birthday, $gender, $course, $password);
+            $server_msg = updateStudent($conn, $username, $email, $birthday, $gender, $password);
             closeConnection($conn);
         }
     }  
     if (isset($_POST["delete_btn"])) {
-        $conn = openConnection();
-        deleteStudent($conn);
-        closeConnection($conn);
-        session_unset();
-        session_destroy();
-        header("Location: ../views/login.php");
-        exit();
+        if ($password !== $confirm_password) {
+            $server_msg = "Please confirm the password to delete your account.";
+        }
+        else{
+            $conn = openConnection();
+            deleteStudent($conn);
+            closeConnection($conn);
+            session_unset();
+            session_destroy();
+            header("Location: ../views/login.php");
+            exit();
+        }
+       
     } 
 }
 ?>

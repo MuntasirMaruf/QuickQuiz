@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Student Registration</title>
-        <link rel="stylesheet" href="../css/regstyle.css">
+        <link rel="stylesheet" href="css/regstyle.css">
         <script src="../js/validation.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>

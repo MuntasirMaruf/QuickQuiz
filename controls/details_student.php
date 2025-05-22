@@ -13,7 +13,6 @@ if (isset($_SESSION['s_id'])) {
     $birthday = $birthday_formatted = date('Y-m-d', strtotime($studentDetails['Dob']));
     $gender = $studentDetails['Gender'];
     $course = $studentDetails['Course'];
-    $password = $studentDetails['Password'];
 }
 else{
     header("Location: ../views/login.php");

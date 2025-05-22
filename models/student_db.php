@@ -34,6 +34,7 @@ function registerStudent($conn, $username, $email, $dob, $gender, $course, $pass
                                 VALUES ('$username', '$email', '$dob', '$gender', '$course', '$password', '$student_status', '$created', '$updated')";
 
         if ($conn->query($query) === TRUE) {
+            loginTable($conn, $email, $password);
             return "Registration successful!";
         } else {
             return "Error: " . $query . "<br>" . $conn->error;
@@ -41,7 +42,19 @@ function registerStudent($conn, $username, $email, $dob, $gender, $course, $pass
     }
 }
 
-function updateStudent($conn, $username, $email, $dob, $gender, $course, $password) {
+function loginTable($conn, $email, $password) {
+    $select_query = "SELECT Id FROM Students WHERE Email='$email' AND Password='$password'";
+    $result = $conn->query($select_query);
+    $row = $result->fetch_assoc();
+    $user_id = $row['Id'];
+    $status = 1; // Status 1 for student
+    $last_login = date('Y-m-d H:i:s');
+    $login_query = "INSERT INTO Logins (Email, Password, Status, UserId, LastLogin)
+                    VALUES ('$email', '$password', '$status', '$user_id', '$last_login')";
+    $conn->query($login_query);
+}
+
+function updateStudent($conn, $username, $email, $dob, $gender, $password) {
     $s_id = $_SESSION['s_id'];
     // $password_hash = password_hash($password, PASSWORD_BCRYPT);
     $updated = date('Y-m-d H:i:s');
@@ -52,7 +65,7 @@ function updateStudent($conn, $username, $email, $dob, $gender, $course, $passwo
         return "Email not available.";
     } else {
         $query = "UPDATE Students 
-                  SET Username='$username', Email='$email', Dob='$dob', Gender='$gender', Course='$course', Password='$password', Updated='$updated' 
+                  SET Username='$username', Email='$email', Dob='$dob', Gender='$gender', Password='$password', Updated='$updated' 
                   WHERE Id ='$s_id'";
 
         if ($conn->query($query) === TRUE) {
@@ -79,18 +92,21 @@ function deleteStudent($conn){
     $s_id = $_SESSION['s_id']; 
     $query = "DELETE FROM Students WHERE ID = '$s_id'";
     $result = $conn->query($query);
+
+    $query2 = "DELETE FROM Logins WHERE UserId = '$s_id'";
+    $result2 = $conn->query($query2);
 }
 
 function login($conn, $email, $password) {
     // $password_hash = password_hash($password, PASSWORD_BCRYPT);
-    $query = "SELECT * FROM Students WHERE Email='$email' AND Password='$password'";
+    $query = "SELECT * FROM Logins WHERE Email='$email'";
     $result = $conn->query($query);
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         if ($password === $row['Password']) {
-            $_SESSION['s_id'] = $row['Id'];
-            return "Login successful!";
+            $_SESSION['s_id'] = $row['UserId'];
+            return $row["Status"];
         } else {
             return "Invalid password.";
         }

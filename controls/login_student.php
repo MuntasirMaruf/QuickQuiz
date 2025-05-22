@@ -32,8 +32,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $conn = openConnection();
             $server_msg = login($conn, $email, $password);
             closeConnection($conn);
-            if($server_msg == "Login successful!"){
-                header("Location: student_dashboard.php");
+            if($server_msg == 1){
+                header("Location: student_exams.php");
+            }
+            if($server_msg == 2){
+                header("Location: teacher_dashboard.php");
             }
         }
     }   

@@ -19,14 +19,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST["password"] ?? '';
     $confirm_password = $_POST["confirm_password"] ?? '';
 
-    $namePattern = "/^[a-zA-Z\s\.\-']+$/";
+    $namePattern = "/^[a-zA-Z\s\.\-']{1,50}$/"; 
     $emailPattern = "/^[^\s@]+@[^\s@]+\.[^\s@]+$/";
     $passwordPattern = "/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/";
 
     if(isset($_POST["submit_btn"]))
     {
         if (empty($username) || !preg_match($namePattern, $username)) {
-            $username_error = "Please enter a valid name.";
+            $username_error = "Please enter a valid name. Max 50 characters.";
             $count++;
         }
     
