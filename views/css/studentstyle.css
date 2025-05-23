@@ -16,7 +16,7 @@
 }
 
 .left_panel a {
-    width: 287px;
+    width: 15vw;
     height: 70px;
     padding: 10px;
     margin-top: 5px;
@@ -60,7 +60,6 @@
     align-items: center;
     flex-direction: row;
     padding-left: 20px;
-    z-index: 1;
 }
 
 .topnav input {
@@ -97,9 +96,14 @@
     outline: none;
 }
 
+.topnav select:hover {
+    outline: none;
+    background-color: #404044;
+}
+
 .profile_bar {
     position: absolute;
-    right: 20px;
+    right: 50px;
     width: 120px;
     height: 50px;
     overflow: hidden;
@@ -129,6 +133,18 @@
     background-color: #7d7d83;
 }
 
+.topnav i {
+    color: white;
+    margin-left: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.topnav i:hover {
+    color: #7d7d83;
+}
+
+
 .right_panel {
     position: fixed;
     margin-top: 110px;
@@ -136,6 +152,7 @@
     width: 80%;
     height: 100%;
     padding-left: 20px;
+    padding-right: 50px;
     background-color: #101014;
 }
 
@@ -284,4 +301,32 @@
     cursor: not-allowed;
 }
 
+.exam_option_box {
+    height: 13.05vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: #101014;
+    border-radius: 10px;
+    margin-bottom: 40px;
+    margin-right: 400px;
+}
+
+.exam_option_box .exam_option{
+    height: 100%;
+}
+
+
+.exam_option img {
+    height: 13.05vw;
+    border-radius: 10px;
+}
+
+.zoom {
+    transition: transform 0.3s ease; 
+}
+
+.zoom:hover {
+    transform: scale(1.1);
+}
 
