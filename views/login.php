@@ -45,7 +45,7 @@ include "../controls/login_student.php"
                     <tr>
                         <td>
                             <div class="have_account">
-                                <p>Don't have an account?<a href="student_registration.php">Sing up</a> </p>
+                                <p>Don't have an account?<a href="student_registration.php">Sign up</a> </p>
                             </div>
                         </td>
                     </tr>

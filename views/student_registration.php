@@ -107,7 +107,7 @@ include "../controls/register_student.php"
                     <tr>
                         <td>
                             <div class="have_account">
-                                <p>Already have an account?<a href="login.php">Sing in</a> </p>
+                                <p>Already have an account?<a href="login.php">Sign in</a> </p>
                             </div>
                         </td>
                     </tr>

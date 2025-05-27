@@ -79,10 +79,10 @@ function updateStudent($conn, $username, $email, $dob, $gender, $password) {
 function getStudentDetails($conn) {
     $s_id = $_SESSION['s_id'];
     $query = "SELECT * FROM Students WHERE ID = '$s_id'";
-    $result = $conn->query($query);
+    $result = $conn->query($query);     // Return all the rows
 
     if ($result->num_rows > 0) {
-        return $result->fetch_assoc();
+        return $result->fetch_assoc();  // returns one row at a time
     } else {
         return null;
     }
@@ -115,6 +115,16 @@ function login($conn, $email, $password) {
     }
 }
 
+function updateDp($conn, $name) {
+    $s_id = $_SESSION["s_id"];
+    $query = "UPDATE Students SET Picture = '$name' WHERE ID = $s_id";
+
+    if ($conn->query($query) === TRUE) {
+        return "Update successful!";
+    } else {
+        return "Error: " . $query . "<br>" . $conn->error;
+    }
+}
 
 
 function closeConnection($conn) {

@@ -13,6 +13,7 @@ closeConnection($conn);
 
 $username = $studentDetails['Username'];
 $email = $studentDetails['Email'];
+$imageName = $studentDetails['Picture'] ?? 'default.png';
 $birthday = $birthday_formatted = date('Y-m-d', strtotime($studentDetails['Dob']));
 $gender = $studentDetails['Gender'];
 $course = $studentDetails['Course'];

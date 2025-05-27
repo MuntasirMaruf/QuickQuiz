@@ -7,7 +7,7 @@ include '../controls/details_student.php';
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Student Dashboard</title>
-        <link rel="stylesheet" href="css/studentstyle.css">
+        <link rel="stylesheet" href="css/mainstyle.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     </head>
     <body>
@@ -18,7 +18,6 @@ include '../controls/details_student.php';
             <a href="student_history.php" class="exam_link" name='history_btn'><i class="fas fa-history"></i>History</a>
         </div>
         <div class='topnav'>
-            <i class="fas fa-square-caret-left" id="back_btn" name="back_btn"></i>
             <div class="search_bar">
                 <i class="fas fa-search"></i>
                 <input type="text" id="search_exam" name="search_exam" placeholder="Search for exams...">
@@ -39,16 +38,16 @@ include '../controls/details_student.php';
         <div class="right_panel">
             <div class="exam_option_box">
                 <div class="exam_option zoom">
-                    <a href="regular_exams.php" id="exam_option_1" name="exam_option_1"><img src="../res/exam_option.jpg" alt="exam_option_1"></a>
+                    <a href="regular_exams.php" id="exam_option_1" name="exam_option_1"><img src="../res/exam_regular.jpg" alt="exam_option_1"></a>
                     <p id="option_1" name="option_1">Regular</p>
                 </div>
                 <div class="exam_option zoom">
-                    <a href="" id="exam_option_2" name="exam_option_2"><img src="../res/exam_option.jpg" alt="exam_option_2"></a>
-                    <p id="option_2" name="option_2">Regular</p>
+                    <a href="" id="exam_option_2" name="exam_option_2"><img src="../res/exam_challenging.jpg" alt="exam_option_2"></a>
+                    <p id="option_2" name="option_2">Challenging</p>
                 </div>
                 <div class="exam_option zoom">
-                    <a href="" id="exam_option_3" name="exam_option_3"><img src="../res/exam_option.jpg" alt="exam_option_3"></a>
-                    <p id="option_3" name="option_3">Regular</p>
+                    <a href="" id="exam_option_3" name="exam_option_3"><img src="../res/exam_hardcore.jpg" alt="exam_option_3"></a>
+                    <p id="option_3" name="option_3">Hardcore</p>
                 </div>
             </div>
         </div>
