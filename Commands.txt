@@ -1,0 +1,2 @@
+rm -rf .git/modules/qpbackend
+rm -rf qpbackend/.git
