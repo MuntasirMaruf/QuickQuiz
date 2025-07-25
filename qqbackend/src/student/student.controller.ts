@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, Res } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MulterError, diskStorage } from 'multer';
 import { StudentService } from './student.service';
@@ -56,4 +56,10 @@ export class StudentController {
     console.log(file);
     return { message: 'File uploaded successfully', fileName: file.filename };
   }
+
+  @Get('photo/:name')
+  getImage(@Param('name') name, @Res() res) {
+    res.sendFile(name, { root: './src/student/uploads' });
+  }
+
 }
