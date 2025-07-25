@@ -25,5 +25,8 @@ export class AdminController{
     addAdmin2(@Body()addAdminData2:adminData):object{
         return this.adminService.addAdmin2(addAdminData2);
     }
+    //getadmin
+    //remove admin
+    //add student
 
     }
