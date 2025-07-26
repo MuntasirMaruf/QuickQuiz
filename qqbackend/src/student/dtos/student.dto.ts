@@ -1,21 +1,30 @@
-import { IsString, IsInt, IsNotEmpty, IsEmail } from 'class-validator';
+import { IsString, IsInt, IsNotEmpty, IsEmail, Matches, IsDate } from 'class-validator';
+import { Type } from 'class-transformer';
 export class StudentDto{
 
-    @IsString({ message: 'Name must be a string'})
-    @IsNotEmpty({ message: 'Name is required' })
+    @Matches(/^[a-zA-Z]+$/, {message: 'Name must contain only letters and spaces.'})
     name: string;
-
-    @IsInt()
-    @IsNotEmpty()
-    age: number;
-
-    @IsString()
-    @IsNotEmpty()
-    grade: string;
     
-    constructor(name: string, age: number, grade: string) {
-        this.name = name;
-        this.age = age;
-        this.grade = grade;
-    }
+    @Matches(/^[a-z0-9-]+@[a-z]+\.aiub\.edu$/, {message: 'Email must be a valid AIUB email address.'})
+    email: string;
+    
+    @Matches(/^01\d{9}$/, {message: 'Invalid phone number.'})
+    phoneNumber: string;
+    
+    @IsDate()
+    @Type(() => Date)
+    dateOfBirth: Date;
+
+    @Matches(/^(male|female|other)$/, {message: 'Gender must be male/female/others.'})
+    gender: string;
+    
+    @IsString()
+    address?: string;
+    
+    @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d!@#$%^&*]{6,}$/, {message: 'Password must be at least 6 characters long, contain at least one uppercase letter, one lowercase letter, and one number.'})
+    password: string;
+
+    status: number;
+
+    displayPicture: string;
 }

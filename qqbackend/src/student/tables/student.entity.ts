@@ -19,4 +19,13 @@ export class Student {
 
   @Column()
   address?: string;
+
+  @Column()
+  password: string;
+
+  @Column()
+  displayPicture: string;
+
+  @Column()
+  status: number;
 }

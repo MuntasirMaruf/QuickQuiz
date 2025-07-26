@@ -15,13 +15,14 @@ export class StudentController {
 
   @Get(':id')
   getById(@Param('id') id: string) {
-    return this.studentService.getById(id);
+    return this.studentService.getById(id);          
   }
 
-  @Post("add")
-  @UsePipes(new ValidationPipe())
-  create(@Body() createStudentDto: StudentDto) : string {
-    return this.studentService.create(createStudentDto);
+  @Post("register")
+  @UsePipes(new ValidationPipe({ transform: true }))
+  create(@Body() studentDto: StudentDto) : object {
+    studentDto.status = 1;
+    return this.studentService.create(studentDto);
   }
 
   // Example of file upload using Multer Uithout validation
@@ -29,7 +30,7 @@ export class StudentController {
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(@UploadedFile() file: Express.Multer.File) {
     console.log(file);
-    return { message: 'File uploaded successfully', fileName: file.filename };
+    return { message: 'File uploaded successfully', fileName: file.originalname };
   }
 
   // Example of file upload with validation using Multer
@@ -60,6 +61,34 @@ export class StudentController {
   @Get('photo/:name')
   getImage(@Param('name') name, @Res() res) {
     res.sendFile(name, { root: './src/student/uploads' });
+  }
+
+  @Post('register/with-photo')
+  @UseInterceptors(FileInterceptor('displayPicture',
+  {
+    fileFilter: (req, file, callback) => {
+      if (file.originalname.match(/\.(jpg|jpeg|png|jpeg)$/)) {
+        callback(null, true);
+      }
+      else {
+        callback(new MulterError('LIMIT_UNEXPECTED_FILE', 'photo'), false);
+      }
+    },
+    limits: { fileSize: 1024 * 1024 * 5 }, // 5 MB
+    storage: diskStorage({
+      destination: './src/student/uploads',
+      filename: (req, file, callback) => {
+        callback(null, `${Date.now()}-${file.originalname}`);
+      },
+    })
+  }))
+  @UsePipes(new ValidationPipe({ transform: true }))
+  register(@Body() studentDto: StudentDto, @UploadedFile() file: Express.Multer.File): object {
+    if (file) {
+      studentDto.displayPicture = file.filename;
+    }
+    studentDto.status = 1;
+    return this.studentService.register(studentDto);
   }
 
 }

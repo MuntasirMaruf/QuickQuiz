@@ -6,7 +6,7 @@ import { StudentModule } from './student/student.module';
 import { AdminModule } from './admin/admin.modlule';
 
 @Module({
-  imports: [StudentModule,AdminModule, TypeOrmModule.forRoot(
+  imports: [StudentModule, AdminModule, TypeOrmModule.forRoot(
     {
       type: 'postgres',
       host: 'localhost',
