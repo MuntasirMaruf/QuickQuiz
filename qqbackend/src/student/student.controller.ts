@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, Res, ParseIntPipe, Delete } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MulterError, diskStorage } from 'multer';
 import { StudentService } from './student.service';
@@ -14,7 +14,7 @@ export class StudentController {
   }
 
   @Get(':id')
-  getById(@Param('id') id: string) {
+  getById(@Param('id', ParseIntPipe) id: number) {
     return this.studentService.getById(id);          
   }
 
@@ -91,4 +91,37 @@ export class StudentController {
     return this.studentService.register(studentDto);
   }
 
+  @Post('update/:id')
+  @UseInterceptors(FileInterceptor('displayPicture',
+  {
+    fileFilter: (req, file, callback) => {
+      if (file.originalname.match(/\.(jpg|jpeg|png|jpeg)$/)) {
+        callback(null, true);
+      }
+      else {
+        callback(new MulterError('LIMIT_UNEXPECTED_FILE', 'photo'), false);
+      }
+    },
+    limits: { fileSize: 1024 * 1024 * 5 }, // 5 MB
+    storage: diskStorage({
+      destination: './src/student/uploads',
+      filename: (req, file, callback) => {
+        callback(null, `${Date.now()}-${file.originalname}`);
+      },
+    })
+  }))
+  @UsePipes(new ValidationPipe({ transform: true }))
+  update(@Param('id', ParseIntPipe) id: number, @Body() studentDto: StudentDto, @UploadedFile() file: Express.Multer.File): object {
+    if (file) {
+      studentDto.displayPicture = file.filename;
+    }
+    return this.studentService.update(id, studentDto);
+  }
+
+
+  @Delete('delete/:id')
+  delete(@Param('id', ParseIntPipe) id: number): object {
+    this.studentService.delete(id);
+    return { message: `Student with id ${id} deleted successfully` };
+  }
 }

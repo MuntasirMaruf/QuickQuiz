@@ -18,6 +18,9 @@ export class Student {
   dateOfBirth: Date;
 
   @Column()
+  gender: string;
+
+  @Column()
   address?: string;
 
   @Column()
