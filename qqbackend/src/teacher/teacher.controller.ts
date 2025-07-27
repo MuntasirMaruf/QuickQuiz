@@ -1,13 +1,6 @@
-import {
-  Controller,
-  Post,
-  UploadedFile,
-  UseInterceptors,
-  Body,
-  BadRequestException,
-} from '@nestjs/common';
+import {Controller,Post,UploadedFile,UseInterceptors,UsePipes,ValidationPipe,Body,BadRequestException,} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer'
+import { diskStorage, MulterError } from 'multer'
 import { TeacherService } from './teacher.service';
 import { TeacherDto } from './dtos/teacher.dto';
 
@@ -15,30 +8,28 @@ import { TeacherDto } from './dtos/teacher.dto';
 export class TeacherController {
   constructor(private readonly teacherService: TeacherService) {}
 
-  @Post('register')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, cb) => {
-          const uniqueName = `${Date.now()}-${file.originalname}`;
-          cb(null, uniqueName);
-        },
-      }),
-      fileFilter: (req, file, cb) => {
-        if (file.mimetype === 'application/pdf') cb(null, true);
-        else cb(new BadRequestException('Only PDF files are allowed'), false);
+  @Post("register")
+  @UsePipes(new ValidationPipe())
+  @UseInterceptors(FileInterceptor('myfile',
+  {
+    fileFilter: (req, file, callback) => {
+      if (file.originalname.match(/\.(pdf)$/)) {
+        callback(null, true);
+      }
+      else {
+        callback(new MulterError('LIMIT_UNEXPECTED_FILE', 'pdf'), false);
+      }
+    },
+    limits: { fileSize: 1024 * 1024 * 5 }, // 5 MB
+    storage: diskStorage({
+      destination: './src/teacher/uploads',
+      filename: (req, file, callback) => {
+        callback(null, `${Date.now()}-${file.originalname}`);
       },
-    }),
-  )
-  async registerTeacher(
-    @Body() teacherDto: TeacherDto,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    if (!file) {
-      throw new BadRequestException('A PDF file is required');
-    }
-
-    return this.teacherService.createTeacher(teacherDto, file.filename);
+    })
+  }))
+  registerTeacher(@Body() teacherDto: TeacherDto, @UploadedFile() file: Express.Multer.File) {
+     teacherDto.documentName = file.filename;
+    return this.teacherService.registerTeacher(teacherDto);
   }
 }

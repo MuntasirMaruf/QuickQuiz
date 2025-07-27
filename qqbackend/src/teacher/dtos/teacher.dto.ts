@@ -1,8 +1,9 @@
 import { IsString, Matches, MinLength } from 'class-validator';
 
 export class TeacherDto {
+
   @IsString()
-  @Matches(/^[A-Za-z0-9 ]*$/, {
+   @Matches(/^[A-Za-z0-9 ]*$/, {
     message: 'Name must not contain special characters',
   })
   name: string;
@@ -19,4 +20,6 @@ export class TeacherDto {
     message: 'Phone number must start with 01 and contain 11 digits',
   })
   phoneNumber: string;
+
+  documentName: string;
 }

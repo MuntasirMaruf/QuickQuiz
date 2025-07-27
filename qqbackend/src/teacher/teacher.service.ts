@@ -4,13 +4,7 @@ import { TeacherDto } from './dtos/teacher.dto';
 
 @Injectable()
 export class TeacherService {
-  createTeacher(teacherDto: TeacherDto, fileName: string) {
-    return {
-      message: 'Teacher registered successfully!',
-      teacher: {
-        ...teacherDto,
-        uploadedDocument: fileName,
-      },
-    };
+  registerTeacher(teacherDto: TeacherDto): TeacherDto {
+    return teacherDto;
   }
 }
