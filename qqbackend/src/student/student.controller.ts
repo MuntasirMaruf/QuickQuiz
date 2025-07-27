@@ -18,7 +18,7 @@ export class StudentController {
     return this.studentService.getById(id);          
   }
 
-  @Post("register")
+  @Post("create")
   @UsePipes(new ValidationPipe({ transform: true }))
   create(@Body() studentDto: StudentDto) : object {
     studentDto.status = 1;
@@ -63,7 +63,8 @@ export class StudentController {
     res.sendFile(name, { root: './src/student/uploads' });
   }
 
-  @Post('register/with-photo')
+  // Register a new student with file upload
+  @Post('register')
   @UseInterceptors(FileInterceptor('displayPicture',
   {
     fileFilter: (req, file, callback) => {

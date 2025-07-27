@@ -12,7 +12,7 @@ export class StudentDto{
     phoneNumber: string;
     
     @IsDate()
-    @Type(() => Date)
+    @Type(() => Date)  // Transform string to Date object
     dateOfBirth: Date;
 
     @Matches(/^(male|female|other)$/, {message: 'Gender must be male/female/others.'})
