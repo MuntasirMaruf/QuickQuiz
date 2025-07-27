@@ -1,6 +1,8 @@
-import { Controller, Get,Post, Param,Query,Body } from "@nestjs/common";
+import { Controller, Get,Post, Param,Query,Body, UseInterceptors, UploadedFile, UsePipes, ValidationPipe } from "@nestjs/common";
 import { AdminService } from "./admin.service";
 import { adminData } from "./admin.dto";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { diskStorage, MulterError } from "multer";
 
 @Controller('admin')
 export class AdminController{
@@ -25,8 +27,38 @@ export class AdminController{
     addAdmin2(@Body()addAdminData2:adminData):object{
         return this.adminService.addAdmin2(addAdminData2);
     }
-    //getadmin
-    //remove admin
-    //add student
+    @Post('/register')
+    @UsePipes(new ValidationPipe())
+   @UseInterceptors(FileInterceptor('file',{
+     
+    fileFilter:(req,file,cb)=>{
+      if(file.originalname.match(/^.*\.(pdf)$/))
+        cb(null,true);
+      else{
+        cb(new MulterError('LIMIT_UNEXPECTED_FILE','image'),false);
+      }
+ 
+    },
+    limits:{fileSize:5000000},
+    storage: diskStorage({
+      destination: './src/admin/Uploads',
+      filename:function(req,file,cb){
+        cb(null,Date.now()+file.originalname)
+      },
+    })
+ 
+   }))
+ 
 
-    }
+  getRegisteredData(@UploadedFile() file: Express.Multer.File,@Body()admindata:adminData):object {
+admindata.filename=file.filename;
+ 
+  console.log(file);
+ console.log(admindata);
+ return this.adminService.getRegisteredData(admindata);
+
+
+}
+}
+
+

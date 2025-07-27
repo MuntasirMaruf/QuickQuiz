@@ -19,4 +19,14 @@ export class AdminService{
         console.log(adminData.username);
         return adminData;
     }
+    addAdminDto(adminData:adminData){
+        console.log(adminData.name);
+        console.log(adminData.phone);
+            return adminData;
+    }
+
+    getRegisteredData(admindata:adminData):object{
+        console.log(admindata);
+        return admindata;
+    }
 }
