@@ -25,7 +25,6 @@ export class StudentController {
     return this.studentService.create(studentDto);
   }
 
-  // Example of file upload using Multer Uithout validation
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(@UploadedFile() file: Express.Multer.File) {
@@ -45,7 +44,7 @@ export class StudentController {
         callback(new MulterError('LIMIT_UNEXPECTED_FILE', 'photo'), false);
       }
     },
-    limits: { fileSize: 1024 * 1024 * 5 }, // 5 MB
+    limits: { fileSize: 1024 * 1024 * 5 },
     storage: diskStorage({
       destination: './src/student/uploads',
       filename: (req, file, callback) => {
@@ -63,7 +62,6 @@ export class StudentController {
     res.sendFile(name, { root: './src/student/uploads' });
   }
 
-  // Register a new student with file upload
   @Post('register')
   @UseInterceptors(FileInterceptor('displayPicture',
   {
@@ -75,7 +73,7 @@ export class StudentController {
         callback(new MulterError('LIMIT_UNEXPECTED_FILE', 'photo'), false);
       }
     },
-    limits: { fileSize: 1024 * 1024 * 5 }, // 5 MB
+    limits: { fileSize: 1024 * 1024 * 5 },
     storage: diskStorage({
       destination: './src/student/uploads',
       filename: (req, file, callback) => {
