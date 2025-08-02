@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, Res, ParseIntPipe, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, Res, ParseIntPipe, Delete, Patch } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MulterError, diskStorage } from 'multer';
 import { StudentService } from './student.service';
@@ -18,52 +18,25 @@ export class StudentController {
     return this.studentService.getById(id);          
   }
 
-  @Post("create")
-  @UsePipes(new ValidationPipe({ transform: true }))
-  create(@Body() studentDto: StudentDto) : object {
-    studentDto.status = 1;
-    return this.studentService.create(studentDto);
-  }
-
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
-    return { message: 'File uploaded successfully', fileName: file.originalname };
-  }
-
-  // Example of file upload with validation using Multer
-  @Post("upload/photo")
-  @UseInterceptors(FileInterceptor('photo',
-  {
-    fileFilter: (req, file, callback) => {
-      if (file.originalname.match(/\.(jpg|jpeg|png|jpeg)$/)) {
-        callback(null, true);
-      }
-      else {
-        callback(new MulterError('LIMIT_UNEXPECTED_FILE', 'photo'), false);
-      }
-    },
-    limits: { fileSize: 1024 * 1024 * 5 },
-    storage: diskStorage({
-      destination: './src/student/uploads',
-      filename: (req, file, callback) => {
-        callback(null, `${Date.now()}-${file.originalname}`);
-      },
-    })
-  }))
-  uploadPhoto(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
-    return { message: 'File uploaded successfully', fileName: file.filename };
-  }
-
   @Get('photo/:name')
   getImage(@Param('name') name, @Res() res) {
     res.sendFile(name, { root: './src/student/uploads' });
   }
 
   @Post('register')
-  @UseInterceptors(FileInterceptor('displayPicture',
+  @UsePipes(new ValidationPipe({ transform: true }))
+  register(@Body() studentDto: StudentDto) {
+    return this.studentService.register(studentDto);
+  }
+
+  @Post('update/:id')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  update(@Param('id', ParseIntPipe) id: number, @Body() studentDto: StudentDto): object {
+    return this.studentService.update(id, studentDto);
+  }
+
+  @Patch('update_dp/:id')
+  @UseInterceptors(FileInterceptor('display_picture',
   {
     fileFilter: (req, file, callback) => {
       if (file.originalname.match(/\.(jpg|jpeg|png|jpeg)$/)) {
@@ -81,42 +54,9 @@ export class StudentController {
       },
     })
   }))
-  @UsePipes(new ValidationPipe({ transform: true }))
-  register(@Body() studentDto: StudentDto, @UploadedFile() file: Express.Multer.File): object {
-    if (file) {
-      studentDto.displayPicture = file.filename;
-    }
-    studentDto.status = 1;
-    return this.studentService.register(studentDto);
+  updateDp(@Param('id', ParseIntPipe) id: number, @UploadedFile() file: Express.Multer.File): object {
+    return this.studentService.updateDp(id, file.filename);
   }
-
-  @Post('update/:id')
-  @UseInterceptors(FileInterceptor('displayPicture',
-  {
-    fileFilter: (req, file, callback) => {
-      if (file.originalname.match(/\.(jpg|jpeg|png|jpeg)$/)) {
-        callback(null, true);
-      }
-      else {
-        callback(new MulterError('LIMIT_UNEXPECTED_FILE', 'photo'), false);
-      }
-    },
-    limits: { fileSize: 1024 * 1024 * 5 }, // 5 MB
-    storage: diskStorage({
-      destination: './src/student/uploads',
-      filename: (req, file, callback) => {
-        callback(null, `${Date.now()}-${file.originalname}`);
-      },
-    })
-  }))
-  @UsePipes(new ValidationPipe({ transform: true }))
-  update(@Param('id', ParseIntPipe) id: number, @Body() studentDto: StudentDto, @UploadedFile() file: Express.Multer.File): object {
-    if (file) {
-      studentDto.displayPicture = file.filename;
-    }
-    return this.studentService.update(id, studentDto);
-  }
-
 
   @Delete('delete/:id')
   delete(@Param('id', ParseIntPipe) id: number): object {

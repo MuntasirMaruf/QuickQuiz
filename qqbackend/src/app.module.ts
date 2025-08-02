@@ -12,8 +12,8 @@ import { AdminModule } from './admin/admin.modlule';
       username: 'postgres',
       password: 'al1aH',
       database: 'quickquiz_db',
-      autoLoadEntities: true,
-      synchronize: true,
+      autoLoadEntities: true, // Automatically load entities from the application
+      synchronize: true, // Synchronize the database schema with the entities
     })],
   controllers: [],
   providers: [],
