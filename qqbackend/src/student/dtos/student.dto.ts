@@ -1,4 +1,4 @@
-import { IsString, IsInt, IsNotEmpty, IsEmail, Matches, IsDate, IsBoolean, IsOptional } from 'class-validator';
+import { IsString, IsInt, IsNotEmpty, IsEmail, Matches, IsDate, IsBoolean, IsOptional, MaxLength } from 'class-validator';
 import { Type } from 'class-transformer';
 export class StudentDto{
 
@@ -6,18 +6,19 @@ export class StudentDto{
     id?: number;
 
     @IsString()
+    @MaxLength(100, {message: 'Usename must not exceed 100 characters.'})
     @Matches(/^[a-zA-Z0-9_]+$/, {message: 'Username must contain only letters, numbers, and underscores.'})
     username: string;
 
     @IsOptional()
     @IsString()
-    @Matches(/^[a-zA-Z\s]+$/, {
-        message: 'Full name must contain only letters and spaces.',
-    })
+    @MaxLength(150, {message: 'Full name must not exceed 150 characters.'})
+    @Matches(/^[a-zA-Z\s]+$/, {message: 'Full name must contain only letters and spaces.'})
     fullname: string;
     
     @IsString()
     @Matches(/^[a-z0-9-]+@[a-z]+\.aiub\.edu$/, {message: 'Email must be a valid AIUB email address.'})
+    @MaxLength(200, {message: 'Email must not exceed 200 characters.'})
     email: string;
     
     @Matches(/^01\d{9}$/, {message: 'Invalid phone number.'})
@@ -32,6 +33,7 @@ export class StudentDto{
     
     @IsOptional()
     @IsString()
+    @MaxLength(300, {message: 'Address must not exceed 300 characters.'})
     address: string;
     
     @IsString()

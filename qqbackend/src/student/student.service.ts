@@ -10,7 +10,7 @@ export class StudentService {
 
     async getAll(): Promise<StudentEntity[]> {
         // Get specific columns to avoid sending sensitive data
-        return this.studentRepository.find({select: ['id', 'username', 'fullname', 'email', 'phone_number', 'date_of_birth', 'gender', 'address', 'display_picture']});
+        return this.studentRepository.find({select: ['id', 'username', 'fullname', 'email', 'phone_number', 'date_of_birth', 'gender', 'address', 'display_picture', 'is_active']});
 
         // Get all active or valid students
         //return this.studentRepository.find({where: [{is_active: true, status: 1}]});
@@ -25,24 +25,30 @@ export class StudentService {
 
     async getBySubstring(substring: string): Promise<StudentEntity[]> {
         return this.studentRepository.find({
-            select: ['id', 'username', 'fullname', 'email', 'phone_number', 'date_of_birth', 'gender', 'address', 'display_picture'],
+            select: ['id', 'username', 'fullname', 'email', 'phone_number', 'date_of_birth', 'gender', 'address', 'display_picture', 'is_active'],
             where: [{username: Like(`%${substring}%`)}]
         })
     }
 
     async getByUsername(username: string): Promise<StudentEntity[]> {
         return this.studentRepository.find({
-            select: ['id', 'username', 'fullname', 'email', 'phone_number', 'date_of_birth', 'gender', 'address', 'display_picture'],
+            select: ['id', 'username', 'fullname', 'email', 'phone_number', 'date_of_birth', 'gender', 'address', 'display_picture', 'is_active'],
             where: [{username: username}]
         })
     }
 
-    async register(dto: StudentDto): Promise<StudentEntity> {
-        const studentDto = this.studentRepository.create(dto); // Create a new instance of StudentEntity
-        studentDto.status = 1; // Default status is 1 (Valid)
-        studentDto.is_active = true; // Default is_active is true
-        studentDto.created_at = new Date();
-        return this.studentRepository.save(studentDto);
+    async register(dto: StudentDto): Promise<StudentEntity | string> {
+        const existingStudent = await this.studentRepository.find({ where: [{id: dto.id}, { username: dto.username }, { email: dto.email}, { phone_number: dto.phone_number }] });
+        if (existingStudent.length > 0) {
+            return "Student with this username/email/number already exists.";
+        }
+        else {
+            const studentDto = this.studentRepository.create(dto); // Create a new instance of StudentEntity
+            studentDto.status = 1; // Default status is 1 (Valid)
+            studentDto.is_active = true; // Default is_active is true
+            studentDto.created_at = new Date();
+            return this.studentRepository.save(studentDto);
+        }
     }
 
     async deleteByUsername(username: string): Promise<string> {
@@ -54,13 +60,13 @@ export class StudentService {
         return "Student not found.";
     }
 
-    async update(id: number, studentDto: StudentDto): Promise<StudentEntity | null> {
+    async update(id: number, studentDto: StudentDto): Promise<StudentEntity | string | null> {
         const existingStudent = await this.studentRepository.findOneBy({ id: id });
         if (existingStudent) {
             await this.studentRepository.update(id, studentDto);
             return this.studentRepository.findOneBy({ id: id });
         }
-        return null;
+        return "Student not found.";
     }
 
     async delete(id: number): Promise<void> {
