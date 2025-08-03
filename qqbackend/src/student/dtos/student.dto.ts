@@ -2,6 +2,9 @@ import { IsString, IsInt, IsNotEmpty, IsEmail, Matches, IsDate, IsBoolean, IsOpt
 import { Type } from 'class-transformer';
 export class StudentDto{
 
+    @IsOptional()
+    id?: number;
+
     @IsString()
     @Matches(/^[a-zA-Z0-9_]+$/, {message: 'Username must contain only letters, numbers, and underscores.'})
     username: string;
@@ -17,8 +20,8 @@ export class StudentDto{
     @Matches(/^[a-z0-9-]+@[a-z]+\.aiub\.edu$/, {message: 'Email must be a valid AIUB email address.'})
     email: string;
     
-    // @Matches(/^01\d{9}$/, {message: 'Invalid phone number.'})
-    phone_number: bigint;
+    @Matches(/^01\d{9}$/, {message: 'Invalid phone number.'})
+    phone_number: string;
     
     @IsDate()
     @Type(() => Date)  // Transform string to Date object

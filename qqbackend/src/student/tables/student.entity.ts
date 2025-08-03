@@ -1,21 +1,23 @@
-import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-
+import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn, PrimaryColumn, BeforeInsert } from "typeorm";
+import { StudentService } from "../student.service";
 @Entity('students')
 export class StudentEntity {
-  @PrimaryGeneratedColumn()
+
+  constructor(private readonly studentService: StudentService) {}
+  @PrimaryColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 100, unique: true, })
+  @Column({ type: 'varchar', length: 100, unique: true })
   username: string;
 
   @Column({ type: 'varchar', length: 150, nullable: true })
   fullname: string;
 
-  @Column({type: 'varchar', length: 100})
+  @Column({type: 'varchar', length: 200})
   email: string;
 
-  @Column( { type: 'bigint', unsigned: true })
-  phone_number: bigint;
+  @Column( { type: 'varchar' })
+  phone_number: string;
 
   @Column()
   date_of_birth: Date;
@@ -44,4 +46,9 @@ export class StudentEntity {
 
   @Column({ type: 'boolean', default: true })
   is_active: boolean;
+
+  @BeforeInsert()
+  setDefaultValues() {
+    this.id = this.id ?? Math.floor(Math.random() * 1_000_000) + 1;
+  }
 }

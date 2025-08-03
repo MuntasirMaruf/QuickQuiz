@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, Res, ParseIntPipe, Delete, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, Res, ParseIntPipe, Delete, Patch, Put } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MulterError, diskStorage } from 'multer';
 import { StudentService } from './student.service';
@@ -18,9 +18,19 @@ export class StudentController {
     return this.studentService.getById(id);          
   }
 
-  @Get('photo/:name')
-  getImage(@Param('name') name, @Res() res) {
-    res.sendFile(name, { root: './src/student/uploads' });
+  @Get("search/:substring")
+  getBySubstring(@Param('substring') substring: string) {
+    return this.studentService.getBySubstring(substring);
+  }
+
+  @Get("retrieve/:username")
+  getByUsername(@Param('username') substring: string) {
+    return this.studentService.getByUsername(substring);
+  }
+
+  @Delete('remove/:username')
+  deleteByUsername(@Param('username') username: string) {
+    return this.studentService.deleteByUsername(username);
   }
 
   @Post('register')
@@ -29,7 +39,7 @@ export class StudentController {
     return this.studentService.register(studentDto);
   }
 
-  @Post('update/:id')
+  @Put('update/:id')
   @UsePipes(new ValidationPipe({ transform: true }))
   update(@Param('id', ParseIntPipe) id: number, @Body() studentDto: StudentDto): object {
     return this.studentService.update(id, studentDto);
@@ -62,5 +72,10 @@ export class StudentController {
   delete(@Param('id', ParseIntPipe) id: number): object {
     this.studentService.delete(id);
     return { message: `Student with id ${id} deleted successfully` };
+  }
+
+  @Get('photo/:name')
+  getImage(@Param('name') name, @Res() res) {
+    res.sendFile(name, { root: './src/student/uploads' });
   }
 }
