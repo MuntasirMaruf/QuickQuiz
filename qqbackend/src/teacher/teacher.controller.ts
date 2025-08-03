@@ -12,7 +12,7 @@ export class TeacherController {
 
   @Post("register")
   @UsePipes(new ValidationPipe({transform: true}))
-  registerStudent(@Body() teacherDto: TeacherDto) {
+  registerTeacher(@Body() teacherDto: TeacherDto) {
     return this.teacherService.registerTeacher(teacherDto);
   }
 
