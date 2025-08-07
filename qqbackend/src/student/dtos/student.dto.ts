@@ -1,10 +1,10 @@
 import { IsString, IsInt, IsNotEmpty, IsEmail, Matches, IsDate, IsBoolean, IsOptional, MaxLength } from 'class-validator';
 import { Type } from 'class-transformer';
+import { StatusDto } from './status.dto';
 export class StudentDto{
 
-    @IsOptional()
-    id?: number;
-
+    id: number;
+    
     @IsString()
     @MaxLength(100, {message: 'Usename must not exceed 100 characters.'})
     @Matches(/^[a-zA-Z0-9_]+$/, {message: 'Username must contain only letters, numbers, and underscores.'})
@@ -45,16 +45,5 @@ export class StudentDto{
     display_picture: string;
 
     @IsInt()
-    @IsOptional()
-    status: number;
-    
-    @Type(() => Date)
-    created_at: Date;
-    
-    @Type(() => Date)
-    updated_at: Date;
-    
-    @IsBoolean()
-    @IsOptional()
-    is_active: boolean;
+    enrolled_program: number;
 }

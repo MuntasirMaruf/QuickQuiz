@@ -1,9 +1,8 @@
-import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, Res, ParseIntPipe, Delete, Patch, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, Res, ParseIntPipe, Delete, Patch, Put, Query } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MulterError, diskStorage } from 'multer';
 import { StudentService } from './student.service';
 import { StudentDto } from './dtos/student.dto';
-
 @Controller('student')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
@@ -24,8 +23,8 @@ export class StudentController {
   }
 
   @Get("retrieve/:username")
-  getByUsername(@Param('username') substring: string) {
-    return this.studentService.getByUsername(substring);
+  getByUsername(@Param('username') username: string) {
+    return this.studentService.getByUsername(username);
   }
 
   @Delete('remove/:username')
@@ -69,9 +68,8 @@ export class StudentController {
   }
 
   @Delete('delete/:id')
-  delete(@Param('id', ParseIntPipe) id: number): object {
-    this.studentService.delete(id);
-    return { message: `Student with id ${id} deleted successfully` };
+  delete(@Param('id', ParseIntPipe) id: number) {
+    return this.studentService.delete(id);
   }
 
   @Get('photo/:name')

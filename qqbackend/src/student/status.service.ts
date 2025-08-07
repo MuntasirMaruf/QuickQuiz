@@ -5,25 +5,33 @@ import { Repository } from "typeorm";
 import { StatusEntity } from "./tables/status.entity";
 
 @Injectable()
-export class StudentStatusService {
+export class StatusService {
 
     constructor(@InjectRepository(StatusEntity) private readonly statusRepository: Repository<StatusEntity>){}
 
-    async createStatus(stautsDto: StatusDto): Promise<StatusEntity> {
-        return this.statusRepository.save(stautsDto);
-    }
+    async createStatus(statusDto: StatusDto): Promise<StatusEntity | string> {
+        const existingStatus = await this.statusRepository.findOneBy({ name: statusDto.name });
+        if (existingStatus) {
+            return "Status with this name already exists.";
+        } else {
+            const statusEntity = this.statusRepository.create(statusDto);
+            return this.statusRepository.save(statusEntity);
+        }
+      }
 
-    async updateStatus(id: number, statusDto: StatusDto): Promise<StatusEntity | null> {
+    async updateStatus(id: number, statusDto: StatusDto): Promise<StatusEntity | string | null> {
         const status = await this.statusRepository.findOneBy({id: id})
+        // Get all the status without this name
+
         if(status){
             await this.statusRepository.update(id, statusDto);
             return this.statusRepository.findOneBy({ id: id });
         }
-        return null;
+        return "Status not found.";
     }
 
     async getAllStatus(): Promise<StatusEntity[]> {
-        return this.statusRepository.find();
+        return this.statusRepository.find({ relations: ['students'] });
     }
 
     async deleteStatus(id: number): Promise<void> {

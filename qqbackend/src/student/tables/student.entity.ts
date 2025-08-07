@@ -1,4 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn, PrimaryColumn, BeforeInsert } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn, PrimaryColumn, BeforeInsert, ManyToMany, OneToOne, ManyToOne, JoinColumn, CreateDateColumn } from "typeorm";
+import { StatusEntity } from "./status.entity";
+import { ProgramEntity } from "./program.entity";
 @Entity('students')
 export class StudentEntity {
   @PrimaryColumn()
@@ -10,10 +12,10 @@ export class StudentEntity {
   @Column({ type: 'varchar', length: 150, nullable: true })
   fullname: string;
 
-  @Column({type: 'varchar', length: 100})
+  @Column({type: 'varchar', length: 200, unique: true })
   email: string;
 
-  @Column( { type: 'varchar' })
+  @Column( { type: 'varchar', length: 15, unique: true })
   phone_number: string;
 
   @Column()
@@ -25,17 +27,13 @@ export class StudentEntity {
   @Column({ type: 'varchar', length: 300, nullable: true })
   address: string;
 
-  @Column({ type: 'varchar', length: 20 })
+  @Column({ type: 'varchar', length: 300 })
   password: string;
 
   @Column({ type: 'varchar', length: 200, nullable: true })
   display_picture: string;
 
-  // Status: 1 (Valid), 2(Invalid), 3(Deleted)
-  @Column({ type: 'int', default: 1 })
-  status: number;
-
-  @Column()
+  @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
@@ -53,6 +51,16 @@ export class StudentEntity {
     
     this.created_at = this.created_at || new Date();
   }
+
+  // Many students can have one status
+  @ManyToOne(() => StatusEntity, status => status.students)
+  @JoinColumn({ name: 'status_id' })
+  status: StatusEntity;
+
+  // Many students can have one program
+  @ManyToOne(() => ProgramEntity, program => program.students)
+  @JoinColumn({ name: 'program_id' })
+  program: ProgramEntity;
 
   private calculateAge(birthDate: Date): number {
     const today = new Date();
