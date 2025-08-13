@@ -10,10 +10,12 @@ import { StatusService } from "./status.service";
 import { ProgramEntity } from "./tables/program.entity";
 import { ProgramController } from "./program.controller";
 import { ProgramService } from "./program.service";
+import { AuthController } from "./auth.controller";
+import { AuthService } from "./auth.service";
 
 @Module({
     imports: [TypeOrmModule.forFeature([StudentEntity, StatusEntity, ProgramEntity])],
-    controllers: [StudentController, StatusController, ProgramController],
-    providers: [StudentService, StatusService, ProgramService],
+    controllers: [StudentController, StatusController, ProgramController, AuthController],
+    providers: [StudentService, StatusService, ProgramService, AuthService],
 })
 export class StudentModule {}

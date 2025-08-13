@@ -16,7 +16,23 @@ export class StudentService {
     ) {}
 
     async getAll(): Promise<StudentEntity[]> {
-        return this.studentRepository.find({select: ['id', 'username', 'fullname', 'email', 'phone_number', 'date_of_birth', 'gender', 'address', 'display_picture', 'is_active'], relations: ['status', 'program']});
+        return this.studentRepository.find({
+            select: ['id', 'username', 'fullname', 'email', 'phone_number', 'date_of_birth', 'gender', 'address', 'display_picture', 'is_active'], relations: ['status', 'program'], 
+        });
+    }
+
+    async getValids(): Promise<StudentEntity[]> {
+        return this.studentRepository.find({
+            select: ['id', 'username', 'fullname', 'email', 'phone_number', 'date_of_birth', 'gender', 'address', 'display_picture', 'is_active'], relations: ['status', 'program'],
+            where: {status: { id: 1 }}, 
+        });
+    }
+
+    async getActives(): Promise<StudentEntity[]> {
+        return this.studentRepository.find({
+            select: ['id', 'username', 'fullname', 'email', 'phone_number', 'date_of_birth', 'gender', 'address', 'display_picture', 'is_active'], relations: ['status', 'program'],
+            where: { is_active: true }, 
+        });
     }
 
     async getById(id: number): Promise<StudentEntity | null> {
@@ -30,11 +46,8 @@ export class StudentService {
         })
     }
 
-    async getByUsername(username: string): Promise<StudentEntity[]> {
-        return this.studentRepository.find({
-            select: ['id', 'username', 'fullname', 'email', 'phone_number', 'date_of_birth', 'gender', 'address', 'display_picture', 'is_active'],
-            where: {username: username}
-        })
+    async getByUsername(username: string): Promise<StudentEntity | null> {                 
+        return await this.studentRepository.findOneBy({ username: username });
     }
 
     async register(dto: StudentDto): Promise<StudentEntity | string> {
@@ -66,7 +79,9 @@ export class StudentService {
 
             const saltRounds = 10;
             const hashed = await bcrypt.hash(dto.password, saltRounds);
-            
+            if (!hashed) {
+                return "Error hashing password.";
+            }
             studentDto.password = hashed;
 
             await this.studentRepository.save(studentDto);
@@ -106,7 +121,6 @@ export class StudentService {
             await this.studentRepository.update(id, student);
             return "Student deleted successfully.";
         }
-
         return "Student not found.";
     }
 
