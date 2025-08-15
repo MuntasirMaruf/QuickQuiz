@@ -1,36 +1,121 @@
-import { Injectable } from '@nestjs/common';
-import { TeacherDto } from './dtos/teacher.dto';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MoreThan, Repository } from 'typeorm';
+import { Repository, MoreThan, LessThan } from 'typeorm';
 import { Teacher } from './tables/teacher.entity';
-import { UpdateStatusDto } from './dtos/update-status.dto';
+import { TeacherDto } from './dtos/teacher.dto';
+import { StatusDto } from './dtos/status.dto';
+import { Status } from './tables/status.entity';
+import * as bcrypt from 'bcrypt';
+import { TeacherLoginDto } from './dtos/teacher_login.dto';
 
 @Injectable()
 export class TeacherService {
-  constructor(@InjectRepository(Teacher) private readonly teacherRepository: Repository<Teacher>) {}
-  async updateStatus(id: number, status: string) : Promise<Teacher | null> {
-    const teacher = await this.teacherRepository.findOneBy({ id: id });
-        if (teacher) {
-            teacher.status = status;
-            return this.teacherRepository.save(teacher);
-        }
-        return null;
+  // createStatus(statusDto: StatusDto) {
+  //   return this.statusRepository.save(statusDto);
+  // }
+  
+  constructor(
+    @InjectRepository(Teacher) private readonly teacherRepository: Repository<Teacher>,
+     @InjectRepository(Status) private readonly statusRepository: Repository<Status>,
+   // @InjectRepository(Course) private readonly courseRepository: Repository<Course>,
+  ) {}
+
+  async teacherLogin(teacherLoginDto: TeacherLoginDto): Promise<Teacher> {
+    const teacher = await this.teacherRepository.findOne({ where: { username: teacherLoginDto.username } });
+    if (!teacher) {
+      throw new UnauthorizedException('Invalid username or password');
+    }
+    const isValidPassword = await bcrypt.compare(teacherLoginDto.password, teacher.password);
+    if (!isValidPassword) {
+      throw new UnauthorizedException('Invalid username or password');
+    }
+    return teacher;
   }
 
+
+
+async findAll(): Promise<Teacher[]> {
+    return this.teacherRepository.find({ relations: ['status'] });
+  }
   
-  async registerTeacher(teacherDto: TeacherDto): Promise<Teacher> {
-    return this.teacherRepository.save(teacherDto);
+  async registerTeacher(teacherDto: TeacherDto): Promise<Teacher | string> {
+    const teacher = this.teacherRepository.create(teacherDto);
+    const status = await this.statusRepository.findOneBy({ id: 1 });
+    if(!status){
+      return "Status not found";
+    }
+    teacher.status = status;
+       const saltRounds = 10;
+            const hashed = await bcrypt.hash(teacherDto.password, saltRounds);
+            if (!hashed) {
+                return "Error hashing password.";
+            }
+            teacher.password = hashed;
+    return this.teacherRepository.save(teacher);
   }
-  // New method to get inactive teachers
-  async getInactiveTeachers(): Promise<Teacher[]> {
-    return this.teacherRepository.find({ where: { status: 'inactive' } });
+          //STATUS -UPDATE
+  // async updateStatus(id: number, status: string): Promise<Teacher | null> {
+  //   const teacher = await this.teacherRepository.findOne({ where: { id } });
+  //   if (teacher) {
+  //     teacher.status = status;
+  //     return this.teacherRepository.save(teacher);
+  //   }
+  //   return null;
+  // }
+               //ACTIVE-STATUS
+  // async getInactiveTeachers(): Promise<Teacher[]> {
+  //   return this.teacherRepository.find({ where: { status: 'inactive' } });
+  // }
+              //AGE LESS THEN
+//   async getTeachersBelowAge(age: number): Promise<Teacher[]> {
+//   return this.teacherRepository.find({
+//     where: {
+//       age: LessThan(age), // Changed from MoreThan to LessThan
+//     },
+//   });
+// }
+  async getTeacherById(id: number): Promise<Teacher | null> {
+    return this.teacherRepository.findOne({ where: { id } });
   }
-  // New method to get teachers older than 40
-  async getTeachersOlderThan40(): Promise<Teacher[]> {
-    return this.teacherRepository.find({
-      where: {
-        age: MoreThan(40),
-      },
-    });
+
+  async updateTeacher(id: number, teacherDto: TeacherDto): Promise<Teacher | null> {
+    const teacher = await this.teacherRepository.findOne({ where: { id } });
+    if (teacher) {
+      Object.assign(teacher, teacherDto);
+      return this.teacherRepository.save(teacher);
+    }
+    return null;
   }
+
+  async deleteTeacher(id: number): Promise<{ message: string }> {
+    const teacher = await this.teacherRepository.findOne({ where: { id } });
+    if (teacher) {
+      await this.teacherRepository.remove(teacher);
+      return { message: `Teacher with ID ${id} deleted successfully.` };
+    }
+    return { message: `Teacher with ID ${id} not found.` };
+  }
+     //m-one
+  // async registerTeacher(teacherDto: TeacherDto): Promise<Teacher> {
+  //   const { courses, ...teacherData } = teacherDto;
+  //   const teacher = this.teacherRepository.create(teacherData);
+
+  //   if (courses && courses.length > 0) {
+  //     teacher.courses = await this.courseRepository.save(courses);
+  //   }
+
+  //   return this.teacherRepository.save(teacher);
+  // }
+
+  // async updateTeacher(id: number, teacherDto: TeacherDto): Promise<Teacher | null> {
+  //   const teacher = await this.teacherRepository.findOne({ where: { id }, relations: ['courses'] });
+  //   if (!teacher) return null;
+
+  //   Object.assign(teacher, teacherDto);
+  //   if (teacherDto.courses) {
+  //     teacher.courses = await this.courseRepository.save(teacherDto.courses);
+  //   }
+
+  //   return this.teacherRepository.save(teacher);
+  // }
 }
