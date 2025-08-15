@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, UseInterc
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MulterError, diskStorage } from 'multer';
 import { StudentService } from './student.service';
-import { StudentDto } from './dtos/student.dto';
+import { StudentDto } from './student.dto';
 
 @Controller('student')
 export class StudentController {
