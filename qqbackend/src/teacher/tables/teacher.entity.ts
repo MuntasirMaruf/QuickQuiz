@@ -1,8 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, ManyToMany } from 'typeorm';
 import { Status } from './status.entity';
+//import { Course } from './course.entity';
 //import { StatusEntity } from './status.entity';
 //import { ProgramEntity } from './program.entity';
-//import { Course } from './course.entity';
+
 
 @Entity('teacher')
 export class Teacher {
@@ -48,4 +49,7 @@ export class Teacher {
   @ManyToOne(() => Status, status => status.teachers)
   @JoinColumn({ name : 'status_id' })
   status: Status;
+
+  //  @ManyToMany(() => Course, course => course.teachers)
+  // courses: Course[];
  }

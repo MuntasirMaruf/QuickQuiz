@@ -1,4 +1,4 @@
-// import { Controller, Post, Put, Param, Body, UsePipes, ValidationPipe, ParseIntPipe, Delete } from '@nestjs/common';
+// import { Controller, Post, Body, Get, Param, ParseIntPipe } from '@nestjs/common';
 // import { CourseService } from './course.service';
 // import { CourseDto } from './dtos/course.dto';
 
@@ -6,22 +6,21 @@
 // export class CourseController {
 //   constructor(private readonly courseService: CourseService) {}
 
-//   // Create a new course
-//   @Post('create')
-//   @UsePipes(new ValidationPipe({ transform: true }))
+//   @Post()
 //   createCourse(@Body() courseDto: CourseDto) {
 //     return this.courseService.createCourse(courseDto);
 //   }
 
-//   // Update an existing course by ID
-//   @Put('update/:id')
-//   updateCourse(@Param('id', ParseIntPipe) id: number, @Body() courseDto: CourseDto) {
-//     return this.courseService.updateCourse(id, courseDto);
+//   @Get()
+//   findAll() {
+//     return this.courseService.findAll();
 //   }
 
-//   // Delete a course by ID
-//   @Delete('delete/:id')
-//   deleteCourse(@Param('id', ParseIntPipe) id: number) {
-//     return this.courseService.deleteCourse(id);
+//   @Post(':courseId/assign/:teacherId')
+//   assignTeacher(
+//     @Param('courseId', ParseIntPipe) courseId: number,
+//     @Param('teacherId', ParseIntPipe) teacherId: number,
+//   ) {
+//     return this.courseService.assignTeacherToCourse(courseId, teacherId);
 //   }
 // }

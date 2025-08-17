@@ -8,9 +8,11 @@ import { Status } from './tables/status.entity';
 import * as bcrypt from 'bcrypt';
 import { TeacherLoginDto } from './dtos/teacher_login.dto';
 import { MailerService } from '@nestjs-modules/mailer';
+//import { Course } from './tables/course.entity';
 
 @Injectable()
 export class TeacherService {
+  courseRepository: any;
   
   // createStatus(statusDto: StatusDto) {
   //   return this.statusRepository.save(statusDto);
@@ -142,4 +144,27 @@ export class TeacherService {
       }
     return null;
   }
+
+//   //=============course---
+//   async assignCourseToTeacher(teacherId: number, courseId: number): Promise<Teacher> {
+//   const teacher = await this.teacherRepository.findOne({ 
+//     where: { id: teacherId }, 
+//     relations: ['courses'] 
+//   });
+//   const course = await this.courseRepository.findOne({ where: { id: courseId } });
+
+//   if (teacher && course) {
+//     teacher.courses.push(course);
+//     return this.teacherRepository.save(teacher);
+//   }
+//   return null;
+// }
+
+// async getTeacherCourses(teacherId: number): Promise<Course[]> {
+//   const teacher = await this.teacherRepository.findOne({ 
+//     where: { id: teacherId }, 
+//     relations: ['courses'] 
+//   });
+//   return teacher?.courses || [];
+// }
 }
