@@ -7,9 +7,11 @@ import { StatusDto } from './dtos/status.dto';
 import { Status } from './tables/status.entity';
 import * as bcrypt from 'bcrypt';
 import { TeacherLoginDto } from './dtos/teacher_login.dto';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class TeacherService {
+  
   // createStatus(statusDto: StatusDto) {
   //   return this.statusRepository.save(statusDto);
   // }
@@ -17,7 +19,7 @@ export class TeacherService {
   constructor(
     @InjectRepository(Teacher) private readonly teacherRepository: Repository<Teacher>,
      @InjectRepository(Status) private readonly statusRepository: Repository<Status>,
-   // @InjectRepository(Course) private readonly courseRepository: Repository<Course>,
+   private readonly mailerService: MailerService, // Inject MailerService
   ) {}
 
   async teacherLogin(teacherLoginDto: TeacherLoginDto): Promise<Teacher> {
@@ -34,7 +36,7 @@ export class TeacherService {
 
 
 
-async findAll(): Promise<Teacher[]> {
+   async findAll(): Promise<Teacher[]> {
     return this.teacherRepository.find({ relations: ['status'] });
   }
   
@@ -51,9 +53,11 @@ async findAll(): Promise<Teacher[]> {
                 return "Error hashing password.";
             }
             teacher.password = hashed;
+
+    this.sendEmail(teacherDto.email, 'Welcome to our platform', 'Welcome to QuickQuiz');
     return this.teacherRepository.save(teacher);
   }
-          //STATUS -UPDATE
+     // //send email
   // async updateStatus(id: number, status: string): Promise<Teacher | null> {
   //   const teacher = await this.teacherRepository.findOne({ where: { id } });
   //   if (teacher) {
@@ -74,6 +78,16 @@ async findAll(): Promise<Teacher[]> {
 //     },
 //   });
 // }
+
+           //send email      
+ async sendEmail(to: string, subject: string, text: string): Promise<void> {
+    await this.mailerService.sendMail({
+      to,
+      subject,
+      text,
+    });
+  }
+
   async getTeacherById(id: number): Promise<Teacher | null> {
     return this.teacherRepository.findOne({ where: { id } });
   }
@@ -118,4 +132,14 @@ async findAll(): Promise<Teacher[]> {
 
   //   return this.teacherRepository.save(teacher);
   // }
+
+  async updateTeacherStatus(tid: number, sid: number): Promise<Teacher | null> {
+    const teacher = await this.teacherRepository.findOneBy({ id: tid });
+    const status = await this.statusRepository.findOneBy({ id: sid });
+    if (teacher && status) {
+      teacher.status = status;
+      return this.teacherRepository.save(teacher);
+      }
+    return null;
+  }
 }

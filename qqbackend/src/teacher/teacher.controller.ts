@@ -82,8 +82,13 @@ export class TeacherController {
   //Route to delete teacher by ID
   @Delete('delete/:id')
   deleteTeacher(@Param('id',ParseIntPipe) id: number) {
-    return this.teacherService.deleteTeacher(id);
+    //return this.teacherService.deleteTeacher(id);
+    return this.teacherService.updateTeacherStatus(id, 3); // soft delete
   }
+@Put('update-status')
+async updateTeacherStatus(@Query() query: { tid: number, sid: number }) {
+  return this.teacherService.updateTeacherStatus(query.tid, query.sid);
+}
 
   // @Post("create/status")
   // createStatus(@Body() statusDto: StatusDto) {
