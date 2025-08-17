@@ -9,26 +9,31 @@ export class AuthController {
   @UsePipes(new ValidationPipe({ transform: true }))
   @Post('login')
   async login(@Body() loginDto: LoginDto, @Session() session: Record<string, any>) {
-    const user = await this.authService.validateUser(loginDto.username, loginDto.password);
+    if(session.student) {
+      return { message: 'Already logged in', Code: 200 };
+    }
+    
+    const student = await this.authService.validateUser(loginDto.username, loginDto.password);
 
-    if (!user) {
+    if (!student) {
       throw new UnauthorizedException('Invalid username or password');
     }
-    session.user = user;
-    return "Login successful";
+    session.student = student;
+    return { message: 'Logged in successfully', Code: 200 };
   }
+
 
   @UsePipes(new ValidationPipe({ transform: true }))
   @Post('logout')
   async logout(@Body() loginDto: LoginDto, @Session() session: Record<string, any>) {
 
-    const user = await this.authService.validateUser(loginDto.username, loginDto.password);
-    if (!user) {
+    const student = await this.authService.validateUser(loginDto.username, loginDto.password);
+    if (!student) {
       throw new UnauthorizedException('Invalid username or password');
     }
     session.destroy((err) => {
       if (err) throw err;
     });
-    return { message: 'Logged out successfully' };
+    return { message: 'Logged out successfully', Code: 200 };
   }
 }

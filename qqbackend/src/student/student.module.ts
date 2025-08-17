@@ -1,7 +1,6 @@
 import { Module } from "@nestjs/common";
 import { StudentService } from "./student.service";
 import { StudentController } from "./student.controller";
-
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { StudentEntity } from "./tables/student.entity";
 import { StatusEntity } from "./tables/status.entity";
@@ -12,10 +11,32 @@ import { ProgramController } from "./program.controller";
 import { ProgramService } from "./program.service";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
+import { MailerModule } from "@nestjs-modules/mailer";
+import { QuestionCqSSCEntity } from "./tables/question_cq_ssc.entity";
+import { SSCQuestionCQService } from "./question_cq_ssc.service";
+import { SSCQuestionCQController } from "./question_cq_ssc.controller";
+import { ExamSSCEntity } from "./tables/exam_ssc.entity";
+import { ExamQuestionSSCEntity } from "./tables/exam_question_ssc.entity";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([StudentEntity, StatusEntity, ProgramEntity])],
-    controllers: [StudentController, StatusController, ProgramController, AuthController],
-    providers: [StudentService, StatusService, ProgramService, AuthService],
+    imports: [
+        TypeOrmModule.forFeature([StudentEntity, StatusEntity, ProgramEntity, QuestionCqSSCEntity, ExamSSCEntity, ExamQuestionSSCEntity]),
+        MailerModule.forRoot({
+            transport: {
+              host: 'smtp.gmail.com',
+              port: 587,
+              secure: false,
+              auth: {
+                user: 'maruf.testai@gmail.com',
+                pass: 'vyvf rurx jobl ipct',
+              },
+            },
+            defaults: {
+              from: '"QuickQuiz" <quickquiz@gmail.com>',
+        },
+        }),
+    ],
+    controllers: [StudentController, StatusController, ProgramController, AuthController, SSCQuestionCQController],
+    providers: [StudentService, StatusService, ProgramService, AuthService, SSCQuestionCQService],
 })
 export class StudentModule {}

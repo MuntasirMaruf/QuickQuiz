@@ -1,6 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, JoinColumn } from "typeorm";
 import { StudentEntity } from "./student.entity";
 import { ProgramEntity } from "./program.entity";
+import { QuestionCqSSCEntity } from "./question_cq_ssc.entity";
+import { ExamSSCEntity } from "./exam_ssc.entity";
 
 @Entity('status')
 export class StatusEntity {
@@ -23,7 +25,15 @@ export class StatusEntity {
     @OneToMany(() => StudentEntity, student => student.status)
     students: StudentEntity[];
 
-    // One status can be associated with many students
+    // One status can be associated with many programs
     @OneToMany(() => ProgramEntity, program => program.status)
     programs: ProgramEntity[];
+
+    // One status can be associated with many questions
+    @OneToMany(() => QuestionCqSSCEntity, question => question.status)
+    questions_cq: QuestionCqSSCEntity[];
+
+    // One status can be associated with many exams
+    @OneToMany(() => ExamSSCEntity, examSSC => examSSC.status)
+    examsSSC: ExamSSCEntity[];
 }

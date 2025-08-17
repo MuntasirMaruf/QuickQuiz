@@ -17,7 +17,8 @@ export class StudentDto{
     fullname: string;
     
     @IsString()
-    @Matches(/^[a-z0-9-]+@[a-z]+\.aiub\.edu$/, {message: 'Email must be a valid AIUB email address.'})
+    // @Matches(/^[a-z0-9-]+@[a-z]+\.aiub\.edu$/, {message: 'Email must be a valid AIUB email address.'})
+    @IsEmail({}, {message: 'Email must be a valid email address.'})
     @MaxLength(200, {message: 'Email must not exceed 200 characters.'})
     email: string;
     

@@ -8,12 +8,11 @@ export class AuthService {
   constructor(private studentService: StudentService) {}
 
   async validateUser(username: string, password: string): Promise<StudentEntity | null> {
-    const user = await this.studentService.getByUsername(username);
-    console.log(user);
-    if (!user) return null;
+    const student = await this.studentService.getByUsername(username);
+    if (!student) return null;
   
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, student.password);
 
-    return isMatch ? user : null;
+    return isMatch ? student : null;
   }  
 }

@@ -5,7 +5,7 @@ export class StudentSessionGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
 
-    if (request.session?.user) {
+    if (request.session?.student) {
       return true;
     }
 

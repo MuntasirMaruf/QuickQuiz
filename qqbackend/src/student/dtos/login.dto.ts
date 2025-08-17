@@ -1,4 +1,5 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsString, IsNotEmpty, IsOptional, IsInt } from 'class-validator';
 export class LoginDto {
     @IsString()
     @IsNotEmpty()

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, Res, ParseIntPipe, Delete, Patch, Put, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, Res, ParseIntPipe, Delete, Patch, Put, Query, UseGuards, Session } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MulterError, diskStorage } from 'multer';
 import { StudentService } from './student.service';
@@ -8,7 +8,61 @@ import { StudentSessionGuard } from './auths/student_session.gaurd';
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
+  @Post('register')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  register(@Body() studentDto: StudentDto) {
+    return this.studentService.register(studentDto);
+  }
+  
+  // Routes for student operations while logged in #################################################################################
   @UseGuards(StudentSessionGuard)
+  @Get("profile")
+  viewPersonalInfo(@Session() session: Record<string, any>) {
+    return this.studentService.viewPersonalInfo(session.student.id);
+  }
+
+  @UseGuards(StudentSessionGuard)
+  @Put("profile/update")
+  @UsePipes(new ValidationPipe({ transform: true }))
+  updatePersonalInfo(@Body() studentDto: StudentDto, @Session() session: Record<string, any>) {
+    return this.studentService.update(session.student.id, studentDto);
+  }
+
+  @UseGuards(StudentSessionGuard)
+  @Patch("profile/update_dp")
+  @UseInterceptors(FileInterceptor('display_picture',
+  {
+    fileFilter: (req, file, callback) => {
+      if (file.originalname.match(/\.(jpg|jpeg|png|jpeg)$/)) {
+        callback(null, true);
+      }
+      else {
+        callback(new MulterError('LIMIT_UNEXPECTED_FILE', 'photo'), false);
+      }
+    },
+    limits: { fileSize: 1024 * 1024 * 5 },
+    storage: diskStorage({
+      destination: './src/student/uploads',
+      filename: (req, file, callback) => {
+        callback(null, `${Date.now()}-${file.originalname}`);
+      },
+    })
+  }))
+  updatePersonalDp(@UploadedFile() file: Express.Multer.File, @Session() session: Record<string, any>) {
+    return this.studentService.updateDp(session.user.id, file.filename);
+  }
+
+  @UseGuards(StudentSessionGuard)
+  @Delete("profile/delete")
+  deletePersonalAccount(@Session() session: Record<string, any>) {
+    return this.studentService.delete(session.user.id);
+  }
+
+  // ##################################################################################################################################
+
+  // Routes for admin operations ######################################################################################################
+
+
   @Get("all")
   getAll() {
     return this.studentService.getAll();
@@ -32,12 +86,6 @@ export class StudentController {
   @Delete('remove/:username')
   deleteByUsername(@Param('username') username: string) {
     return this.studentService.deleteByUsername(username);
-  }
-
-  @Post('register')
-  @UsePipes(new ValidationPipe({ transform: true }))
-  register(@Body() studentDto: StudentDto) {
-    return this.studentService.register(studentDto);
   }
 
   @Put('update/:id')
