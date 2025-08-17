@@ -7,7 +7,6 @@ import { StatusEntity } from "./tables/status.entity";
 import { ProgramEntity } from "./tables/program.entity";
 import * as bcrypt from 'bcrypt';
 import { MailerService } from "@nestjs-modules/mailer";
-import { send } from "process";
 
 @Injectable()
 export class StudentService {
@@ -197,6 +196,14 @@ export class StudentService {
             return "Student deleted successfully.";
         }
         throw new NotFoundException("Student not found.");
+    }
+
+    async getDp(id: number) : Promise<string | null> {
+      const student = await this.studentRepository.findOneBy({id: id});
+      if(student?.display_picture == null){
+        return "No dp"
+      }
+      return student.display_picture;
     }
 
 

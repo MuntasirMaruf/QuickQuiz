@@ -34,7 +34,6 @@ export class ExamSSCEntity {
     @JoinColumn({ name: 'status_id' })
     status: StatusEntity;
 
-
     @OneToMany(() => ExamQuestionSSCEntity, examQuestion => examQuestion.exam_ssc)
     examQuestions: ExamQuestionSSCEntity[];
 }

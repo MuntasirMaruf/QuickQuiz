@@ -17,6 +17,9 @@ import { SSCQuestionCQService } from "./question_cq_ssc.service";
 import { SSCQuestionCQController } from "./question_cq_ssc.controller";
 import { ExamSSCEntity } from "./tables/exam_ssc.entity";
 import { ExamQuestionSSCEntity } from "./tables/exam_question_ssc.entity";
+import { JwtModule } from "@nestjs/jwt";
+import { jwtConstants } from "./auths/jwt_constraints";
+import { AdminService } from "./dummy_admin.service";
 
 @Module({
     imports: [
@@ -35,8 +38,13 @@ import { ExamQuestionSSCEntity } from "./tables/exam_question_ssc.entity";
               from: '"QuickQuiz" <quickquiz@gmail.com>',
         },
         }),
+        JwtModule.register({
+          global: true,
+          secret: jwtConstants.secret,
+          signOptions: { expiresIn: '180s' },
+        }),
     ],
     controllers: [StudentController, StatusController, ProgramController, AuthController, SSCQuestionCQController],
-    providers: [StudentService, StatusService, ProgramService, AuthService, SSCQuestionCQService],
+    providers: [StudentService, StatusService, ProgramService, AuthService, SSCQuestionCQService, AdminService],
 })
 export class StudentModule {}

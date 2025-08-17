@@ -4,6 +4,7 @@ import { MulterError, diskStorage } from 'multer';
 import { StudentService } from './student.service';
 import { StudentDto } from './dtos/student.dto';
 import { StudentSessionGuard } from './auths/student_session.gaurd';
+import { AdminJwtGuard } from './auths/admin_jwt.gaurd';
 @Controller('student')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
@@ -49,7 +50,14 @@ export class StudentController {
     })
   }))
   updatePersonalDp(@UploadedFile() file: Express.Multer.File, @Session() session: Record<string, any>) {
-    return this.studentService.updateDp(session.user.id, file.filename);
+    return this.studentService.updateDp(session.student.id, file.filename);
+  }
+
+  @UseGuards(StudentSessionGuard)
+  @Get('profile/get_dp')
+  async getDisplayPicture(@Session() session: Record<string, any>,  @Res() res) {
+    const name = await this.studentService.getDp(session.student.id);
+    res.sendFile(name, { root: './src/student/uploads' });
   }
 
   @UseGuards(StudentSessionGuard)
@@ -63,37 +71,44 @@ export class StudentController {
   // Routes for admin operations ######################################################################################################
 
 
+  @UseGuards(AdminJwtGuard)
   @Get("all")
   getAll() {
     return this.studentService.getAll();
   }
 
+  @UseGuards(AdminJwtGuard)
   @Get(':id')
   getById(@Param('id', ParseIntPipe) id: number) {
     return this.studentService.getById(id);          
   }
 
+  @UseGuards(AdminJwtGuard)
   @Get("search/:substring")
   getBySubstring(@Param('substring') substring: string) {
     return this.studentService.getBySubstring(substring);
   }
 
+  @UseGuards(AdminJwtGuard)
   @Get("retrieve/:username")
   getByUsername(@Param('username') username: string) {
     return this.studentService.getByUsername(username);
   }
 
+  @UseGuards(AdminJwtGuard)
   @Delete('remove/:username')
   deleteByUsername(@Param('username') username: string) {
     return this.studentService.deleteByUsername(username);
   }
 
+  @UseGuards(AdminJwtGuard)
   @Put('update/:id')
   @UsePipes(new ValidationPipe({ transform: true }))
   update(@Param('id', ParseIntPipe) id: number, @Body() studentDto: StudentDto): object {
     return this.studentService.update(id, studentDto);
   }
 
+  @UseGuards(AdminJwtGuard)
   @Patch('update_dp/:id')
   @UseInterceptors(FileInterceptor('display_picture',
   {
@@ -117,11 +132,13 @@ export class StudentController {
     return this.studentService.updateDp(id, file.filename);
   }
 
+  @UseGuards(AdminJwtGuard)
   @Delete('delete/:id')
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.studentService.delete(id);
   }
 
+  @UseGuards(AdminJwtGuard)
   @Get('photo/:name')
   getImage(@Param('name') name, @Res() res) {
     res.sendFile(name, { root: './src/student/uploads' });
