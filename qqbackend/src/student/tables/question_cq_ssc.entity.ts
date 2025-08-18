@@ -56,7 +56,7 @@ export class QuestionCqSSCEntity {
     updated_at: Date;
 
     // Many Questions can have one status
-    @ManyToOne(() => StatusEntity, status => status.questions_cq)
+    @ManyToOne(() => StatusEntity, status => status.questions_cq, { cascade: false })
     @JoinColumn({ name: 'status_id' })
     status: StatusEntity;
 

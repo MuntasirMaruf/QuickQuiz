@@ -63,7 +63,9 @@ export class StudentController {
   @UseGuards(StudentSessionGuard)
   @Delete("profile/delete")
   deletePersonalAccount(@Session() session: Record<string, any>) {
-    return this.studentService.delete(session.user.id);
+    const id: number = session.student.id;
+    session.destroy();
+    return this.studentService.delete(id);
   }
 
   // ##################################################################################################################################
@@ -134,9 +136,10 @@ export class StudentController {
 
   @UseGuards(AdminJwtGuard)
   @Delete('delete/:id')
-  delete(@Param('id', ParseIntPipe) id: number) {
-    return this.studentService.delete(id);
+  delete(@Param('id') email: string) {
+    return this.studentService.deleteHard(email);
   }
+
 
   @UseGuards(AdminJwtGuard)
   @Get('photo/:name')

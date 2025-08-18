@@ -24,7 +24,7 @@ import { jwtConstants } from './jwt_constraints';
         console.log(payload);
         request['user'] = payload;
       } catch {
-        throw new UnauthorizedException("Token expired or inalid token");
+        throw new UnauthorizedException("Token expired or invalid token");
       }
       return true;
     }

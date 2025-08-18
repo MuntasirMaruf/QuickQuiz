@@ -131,10 +131,21 @@ export class StudentService {
         throw new NotFoundException("Student not found.");
     }
 
+    async deleteHard(email: string): Promise<string | void> {
+        let student = await this.studentRepository.findOne({ where: {email: email }});
+        if (student) {
+          console.log(student)
+            await this.studentRepository.delete(student.id);
+            return "Student deleted successfully.";
+        }
+        throw new NotFoundException("Student not found.");
+    }
+
 
     async getAll(): Promise<StudentEntity[]> {
         const students = await this.studentRepository.find({
             select: ['id', 'username', 'fullname', 'email', 'phone_number', 'date_of_birth', 'gender', 'address', 'display_picture', 'is_active'], relations: ['status', 'program'], 
+            
         });
         if (students.length > 0) {
             return students;
@@ -182,7 +193,7 @@ export class StudentService {
     }
 
     async getByUsername(username: string): Promise<StudentEntity | null> {                 
-        const student = await this.studentRepository.findOneBy({ username: username });
+        const student = await this.studentRepository.findOne({ where: {username: username, status: {id: 1}  } });
         if (student) {
             return student;
         }
