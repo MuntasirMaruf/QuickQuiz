@@ -3,15 +3,16 @@ import { AdminController } from "./admin.controller";
 import { adminData } from "./admin.dto";
 import { AdminEntity } from "./admin.entity";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Between, Repository } from "typeorm";
 import { TeacherEntity } from "src/teacher/teacher.entity";
-
+import { StudentEntity } from "src/student/student.entity";
 import * as bcrypt from 'bcrypt';
 import { CreateTeacherDto } from "src/teacher/techer.dto";
+import { StudentDto } from "src/student/student.dto";
 import { MailerService } from "@nestjs-modules/mailer";
 @Injectable()
 export class AdminService{
-    constructor(@InjectRepository(AdminEntity)private adminRepository:Repository<AdminEntity>,@InjectRepository(TeacherEntity) private teacherRepository:Repository<TeacherEntity>, private mailerService: MailerService ){}
+    constructor(@InjectRepository(AdminEntity)private adminRepository:Repository<AdminEntity>,@InjectRepository(TeacherEntity) private teacherRepository:Repository<TeacherEntity>,@InjectRepository(StudentEntity) private studentRepository:Repository<StudentEntity>, private mailerService: MailerService ){}
     
     getAdmin():string{
         return 'admin service is running!';
@@ -19,9 +20,9 @@ export class AdminService{
     getAdminById(admin:number):string{
         return "admin id is "+ admin;
     }
-      getAbdullahByNameAndId(name,id){
-        return 'Name:' + name + ', id:' + id;
-    }
+    //   getAbdullahByNameAndId(name,id){
+    //     return 'Name:' + name + ', id:' + id;
+    // }
     addAdmin(adminData:object){
         return adminData;
     }
@@ -72,41 +73,6 @@ export class AdminService{
     // return this.teacherRepository.find({where:{country:'Unknown'}});
     // }
 
-    async getAllAdmin(): Promise<AdminEntity[]>{
-       //return this.adminRepository.find();
-       return this.adminRepository.find({
-        order:{
-            id:"ASC"
-        }
-       })
-    }
-    async getTeacherByAdminId(adminid:number):Promise<TeacherEntity[]>{
-    return this.teacherRepository.find({where:{admin:{id:adminid}}})
-    }
-
-    async updateAdmin(id:number, name:AdminEntity): Promise<AdminEntity | null>{
-    await this.adminRepository.update(id,name);
-    return this.adminRepository.findOneBy({id:id});
-    console.log('Update complete');
-    }
-    async deleteAdmin(id:number):Promise<void>{
-    await this.adminRepository.delete(id);
-    }
- 
-   async createTeacher(adminid: number, teacherData: CreateTeacherDto): Promise<TeacherEntity> {
-  const admin = await this.adminRepository.findOneBy({ id: adminid });
-  if (!admin) throw new Error('Admin not found');
-
-  // Create a TeacherEntity from the DTO
-  const teacher = this.teacherRepository.create({
-    ...teacherData, // spread DTO properties
-    admin,          // assign the admin relation
-  });
-
-  return this.teacherRepository.save(teacher);
-}
- 
- 
     async addAdminDto(adminData:adminData): Promise<object>{
  
     const admin= await this.adminRepository.save(adminData);
@@ -120,37 +86,7 @@ export class AdminService{
 
     }
 
-
-
-
-//     async addAdminDto(adminData: adminData): Promise<object> {
-//     // Get all existing IDs sorted
-//     const admins = await this.adminRepository.find({
-//         order: { id: "ASC" },
-//         select: ["id"] // only fetch id for speed
-//     });
-
-//     // Find the smallest missing ID
-//     let newId = 1;
-//     for (const admin of admins) {
-//         if (admin.id !== newId) break;
-//         newId++;
-//     }
-
-//     // Set the missing ID
-//     const adminToSave = this.adminRepository.create({
-//         id: newId,
-//         ...adminData
-//     });
-
-//     const savedAdmin = await this.adminRepository.save(adminToSave);
-//     return savedAdmin;
-// }
-    getAllAdminWitTeacher():Promise<AdminEntity[]>{
-    return this.adminRepository.find({relations:['teachers']});
-    }
-
-    async loginSession(id,pass): Promise<AdminEntity    | null> {
+     async loginSession(id,pass): Promise<AdminEntity    | null> {
     const check= await this.adminRepository.findOneBy({id:id});
     if(!check){
        // throw new Error('Admin Not Found! Please Check With Valid Id');
@@ -181,6 +117,109 @@ export class AdminService{
         }
     }
    }
+
+
+    async getAllAdmin(): Promise<AdminEntity[]>{
+       //return this.adminRepository.find();
+       return this.adminRepository.find({
+        order:{
+            id:"ASC"
+        }
+       })
+    }
+
+    async updateAdmin(id:number, name:AdminEntity): Promise<AdminEntity | null>{
+    await this.adminRepository.update(id,name);
+    return this.adminRepository.findOneBy({id:id});
+    console.log('Update complete');
+    }
+
+    async deleteAdmin(id:number):Promise<void>{
+    await this.adminRepository.delete(id);
+    }
+    
+   async createTeacher(adminid: number, teacherData: CreateTeacherDto): Promise<TeacherEntity> {
+  const admin = await this.adminRepository.findOneBy({ id: adminid });
+  if (!admin) throw new Error('Admin not found');
+
+  // Create a TeacherEntity from the DTO
+  const teacher = this.teacherRepository.create({
+    ...teacherData, // spread DTO properties
+    admin,          // assign the admin relation
+  });
+
+  return this.teacherRepository.save(teacher);
+}
+getAllAdminWitTeacher():Promise<AdminEntity[]>{
+    return this.adminRepository.find({relations:['teachers']});
+    }
+
+
+async getTeacherByAdminId(adminid:number):Promise<TeacherEntity[]>{
+    return this.teacherRepository.find({where:{admin:{id:adminid}}})
+    }
+
+ 
+async createStudent(adminid: number, studentData: StudentDto): Promise<StudentEntity> {
+  const admin = await this.adminRepository.findOneBy({ id: adminid });
+  if (!admin) {
+    throw new Error('Admin not found');
+  }
+
+  const existing = await this.studentRepository.findOneBy({ email: studentData.email });
+  if (existing) {
+    throw new HttpException('Email already exists', HttpStatus.BAD_REQUEST);
+  }
+
+  const student = this.studentRepository.create({
+    ...studentData, // cgpa is now a number
+    admin: admin,
+  });
+
+  return this.studentRepository.save(student);
+}
+async getAllStudents(): Promise<StudentEntity[]> {
+  return this.studentRepository.find(); // returns all students
+}
+
+async getStudentsWithCgpaRange(min: number, max: number): Promise<StudentEntity[]> {
+    return this.studentRepository.find({
+        where: {
+            cgpa: Between(min, max),
+        },
+    });
+}
+
+
+
+
+
+//     async addAdminDto(adminData: adminData): Promise<object> {
+//     // Get all existing IDs sorted
+//     const admins = await this.adminRepository.find({
+//         order: { id: "ASC" },
+//         select: ["id"] // only fetch id for speed
+//     });
+
+//     // Find the smallest missing ID
+//     let newId = 1;
+//     for (const admin of admins) {
+//         if (admin.id !== newId) break;
+//         newId++;
+//     }
+
+//     // Set the missing ID
+//     const adminToSave = this.adminRepository.create({
+//         id: newId,
+//         ...adminData
+//     });
+
+//     const savedAdmin = await this.adminRepository.save(adminToSave);
+//     return savedAdmin;
+// }
+    
+
+   
  
 
     

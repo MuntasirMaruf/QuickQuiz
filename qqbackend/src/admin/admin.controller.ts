@@ -1,13 +1,16 @@
-import { Controller, Get,Post, Param,Query,Body, UseInterceptors, UploadedFile, UsePipes, ValidationPipe, ParseIntPipe, Put, Delete, UseGuards, Session, HttpException, HttpStatus } from "@nestjs/common";
+import { Controller, Get,Post, Param,Query,Body, UseInterceptors, UploadedFile, UsePipes, ValidationPipe, ParseIntPipe, Put, Delete, UseGuards, Session, HttpException, HttpStatus, Patch } from "@nestjs/common";
 import { AdminService } from "./admin.service";
 import { adminData, adminLoginDto } from "./admin.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage, MulterError } from "multer";
 import { AdminEntity } from "./admin.entity";
 import { TeacherEntity } from "src/teacher/teacher.entity";
+import { StudentEntity } from "src/student/student.entity";
 import * as bcrypt from 'bcrypt';
 import { SessionGuard } from "./admin.session.guard";
 import { CreateTeacherDto } from "src/teacher/techer.dto";
+import { StudentDto } from "src/student/student.dto";
+import { plainToInstance } from "class-transformer";
 
 @Controller('admin')
 export class AdminController{
@@ -20,10 +23,10 @@ export class AdminController{
     getAdminById(@Param('id')admin:number){
       return this.adminService.getAdminById(admin);
     }
-     @Get("/find")
-   getAbdullahByNameAndId(@Query('name')name:string,@Query('id')id:number):string{
-     return this.adminService.getAbdullahByNameAndId(name,id);
-   }
+  //    @Get("/find")
+  //  getAbdullahByNameAndId(@Query('name')name:string,@Query('id')id:number):string{
+  //    return this.adminService.getAbdullahByNameAndId(name,id);
+  //  }
     @Post('/addAdmin')
     addAdmin(@Body()adminData:object):object{
         return this.adminService.addAdmin(adminData);
@@ -170,8 +173,42 @@ export class AdminController{
    getTeacherByAdminId(@Param('adminid',ParseIntPipe) id:number):Promise<TeacherEntity[]>{
   return this.adminService.getTeacherByAdminId(id);
   }
- 
 
+ @Post('/addStudent/:adminid')
+@UsePipes(new ValidationPipe({ transform: true }))
+@UseGuards(SessionGuard)
+addAStudent(
+  @Param('adminid', ParseIntPipe) adminid: number,
+  @Body() studentData: StudentDto,
+  @Session() session,
+): Promise<StudentEntity> {
+  const loggedInAdminId = session.ID;
+
+  // Check if the admin is trying to use another ID
+  if (adminid !== loggedInAdminId) {
+    throw new HttpException(
+      'You cannot add a student for another admin!',
+      HttpStatus.FORBIDDEN,
+    );
+  }
+
+  console.log('Admin ${loggedInAdminId} is adding a student');
+
+  return this.adminService.createStudent(loggedInAdminId, studentData);
 }
 
 
+@Post('/getStudents')
+getAllStudents(): Promise<StudentEntity[]> {
+  return this.adminService.getAllStudents(); // or studentService.getAllStudents()
+}
+
+@Get('/students/cgpa-range')
+getStudentsCgpaRange(
+  @Query('min') min: number,
+  @Query('max') max: number
+): Promise<StudentEntity[]> {
+    return this.adminService.getStudentsWithCgpaRange(min, max);
+}
+
+}
