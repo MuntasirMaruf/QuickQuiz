@@ -86,6 +86,7 @@ export class AdminService{
 
     }
 
+
      async loginSession(id,pass): Promise<AdminEntity    | null> {
     const check= await this.adminRepository.findOneBy({id:id});
     if(!check){
@@ -152,12 +153,23 @@ export class AdminService{
 }
 getAllAdminWitTeacher():Promise<AdminEntity[]>{
     return this.adminRepository.find({relations:['teachers']});
-    }
+ }
 
 
 async getTeacherByAdminId(adminid:number):Promise<TeacherEntity[]>{
     return this.teacherRepository.find({where:{admin:{id:adminid}}})
     }
+    async getAdminByTeacher(teacherId: number): Promise<AdminEntity> { 
+  const teacher = await this.teacherRepository.findOne({
+    where: { id: teacherId },
+    relations: ['admin'], 
+  });
+  if (!teacher) {
+    throw new Error('Teacher not found');
+  }
+  return teacher.admin;
+}
+
 
  
 async createStudent(adminid: number, studentData: StudentDto): Promise<StudentEntity> {

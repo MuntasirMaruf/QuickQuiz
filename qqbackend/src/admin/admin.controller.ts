@@ -173,6 +173,13 @@ export class AdminController{
    getTeacherByAdminId(@Param('adminid',ParseIntPipe) id:number):Promise<TeacherEntity[]>{
   return this.adminService.getTeacherByAdminId(id);
   }
+  @Get('/getAdminByTeacher/:teacherId')
+  getAdminByTeacher(
+  @Param('teacherId', ParseIntPipe) teacherId: number
+  ): Promise<AdminEntity|null> {
+  return this.adminService.getAdminByTeacher(teacherId);
+}
+
 
  @Post('/addStudent/:adminid')
 @UsePipes(new ValidationPipe({ transform: true }))
