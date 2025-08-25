@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { StudentModule } from './student/student.module';
 import { AdminModule } from './admin/admin.modlule';
+import { TeacherModule } from './teacher/teacher.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
 
 @Module({
   imports: [StudentModule, AdminModule, TypeOrmModule.forRoot(
