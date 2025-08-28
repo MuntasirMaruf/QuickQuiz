@@ -12,8 +12,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class TeacherService {
-  courseRepository: any;
-  
+ // courseRepository: any;
   // createStatus(statusDto: StatusDto) {
   //   return this.statusRepository.save(statusDto);
   // }
