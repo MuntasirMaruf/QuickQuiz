@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from "next/link"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,10 +25,41 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body>
+      <header>
+          <a href="/"><img src="/logo.png" alt="EdPlatform" /></a>
+          <nav>
+            <Link href="/">Home</Link>
+            <Link href="/about">About</Link>
+            <Link href="/contact">Contact</Link>
+          </nav>
+        </header>
+
+        <main>
         {children}
+          <section>
+            <h1>About Us</h1>
+            <p>EdPlatform is dedicated to providing quality online learning.</p>
+          </section>
+
+          <section>
+            <h2>Our Mission</h2>
+            <p>Empower students and teachers through innovative tools.</p>
+          </section>
+
+          <section>
+            <h2>Our Team</h2>
+            <p>Meet the people behind EdPlatform.</p>
+          </section>
+          
+        </main>
+
+        <footer>
+          <p>
+            <a href="/terms">Terms</a> | <a href="/privacy">Privacy</a>
+          </p>
+          <small>© 2025 EdPlatform</small>
+        </footer>
       </body>
     </html>
   );
