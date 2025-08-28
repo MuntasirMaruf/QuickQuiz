@@ -24,10 +24,72 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <head>
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </head>
+      <body>
+        {/* Top Header */}
+        <header>
+          <div>
+            <h1>Your Website</h1>
+            <p>Welcome to our amazing website</p>
+          </div>
+        </header>
+
+        {/* Top Navigation Bar */}
+        <nav>
+          <a href="/">Home</a>
+          <a href="/about">About</a>
+          <a href="/services">Services</a>
+          <a href="/products">Products</a>
+          <a href="/blog">Blog</a>
+          <a href="/contact">Contact</a>
+        </nav>
+
+        {/* Main Content Area */}
+        <main>
+          {children}
+        </main>
+
+        {/* Footer */}
+        <footer>
+          <div>
+            <div>
+              <h3>Company Info</h3>
+              <p>Your Company Name</p>
+              <p>123 Main Street</p>
+              <p>City, State 12345</p>
+              <p>Phone: (555) 123-4567</p>
+              <p>Email: info@yourcompany.com</p>
+            </div>
+            
+            <div>
+              <h3>Quick Links</h3>
+              <ul>
+                <li><a href="/privacy">Privacy Policy</a></li>
+                <li><a href="/terms">Terms of Service</a></li>
+                <li><a href="/support">Support</a></li>
+                <li><a href="/sitemap">Sitemap</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3>Follow Us</h3>
+              <ul>
+                <li><a href="#" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+                <li><a href="#" target="_blank" rel="noopener noreferrer">Twitter</a></li>
+                <li><a href="#" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                <li><a href="#" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div>
+            <hr />
+            <p>&copy; 2024 Your Company Name. All rights reserved.</p>
+          </div>
+        </footer>
       </body>
     </html>
   );

@@ -6,7 +6,7 @@ import { Status } from './status.entity';
 
 
 @Entity('teacher')
-export class Teacher {
+export class TeacherEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

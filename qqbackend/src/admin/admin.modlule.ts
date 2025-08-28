@@ -3,8 +3,8 @@ import { AdminService } from "./admin.service";
 import { AdminController } from "./admin.controller";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AdminEntity } from "./admin.entity";
-import { TeacherEntity } from "src/teacher/teacher.entity";
-import { StudentEntity } from "src/student/student.entity";
+import { TeacherEntity } from "src/teacher/tables/teacher.entity";
+import { StudentEntity } from "src/student/tables/student.entity";
 import { MailerModule } from "@nestjs-modules/mailer";
 @Module({ imports: [ TypeOrmModule.forFeature([AdminEntity,TeacherEntity,StudentEntity]),MailerModule.forRoot({ 
   transport: { 
