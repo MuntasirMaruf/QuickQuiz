@@ -3,7 +3,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage, MulterError } from 'multer';
 import { TeacherService } from './teacher.service';
 import { TeacherDto } from './dtos/teacher.dto';
-import { Teacher } from './tables/teacher.entity';
+import { TeacherEntity } from './tables/teacher.entity';
 import { StatusDto } from './dtos/status.dto';
 import { TeacherLoginDto } from './dtos/teacher_login.dto';
 import { TeacherSessionGaurd } from './session_teacher.gaurd';
