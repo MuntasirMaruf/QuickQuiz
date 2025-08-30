@@ -1,11 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, ManyToMany } from 'typeorm';
-import { Status } from './status.entity';
+import { StatusEntity } from 'src/student/tables/status.entity';
+import { AdminEntity } from 'src/admin/admin.entity';
 //import { Course } from './course.entity';
 //import { StatusEntity } from './status.entity';
 //import { ProgramEntity } from './program.entity';
 
 
-@Entity('teacher')
+@Entity('teachers')
 export class TeacherEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -16,10 +17,10 @@ export class TeacherEntity {
   @Column({ type: 'varchar', length: 150, nullable: true })
   fullname: string;
 
-  @Column({type: 'varchar', length: 200, unique: true,nullable: true })
+  @Column({ type: 'varchar', length: 200, unique: true, nullable: true })
   email: string;
 
-  @Column( { type: 'varchar', length: 15, unique: true })
+  @Column({ type: 'varchar', length: 15, unique: true })
   phone_number: string;
 
   @Column()
@@ -46,10 +47,14 @@ export class TeacherEntity {
   @Column({ type: 'boolean', default: true })
   is_active: boolean;
 
-  @ManyToOne(() => Status, status => status.teachers)
-  @JoinColumn({ name : 'status_id' })
-  status: Status;
+  @ManyToOne(() => StatusEntity, status => status.teachers)
+  @JoinColumn({ name: 'status_id' })
+  status: StatusEntity;
 
   //  @ManyToMany(() => Course, course => course.teachers)
   // courses: Course[];
- }
+
+  @ManyToOne(() => AdminEntity, admin => admin.teachers, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'admin_id' }) // optional, if you want custom column name
+  admin: AdminEntity;
+}

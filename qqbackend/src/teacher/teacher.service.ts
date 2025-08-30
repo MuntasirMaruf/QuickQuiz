@@ -3,15 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThan, LessThan } from 'typeorm';
 import { TeacherEntity } from './tables/teacher.entity';
 import { TeacherDto } from './dtos/teacher.dto';
-import { StatusDto } from './dtos/status.dto';
-import { Status } from './tables/status.entity';
 import * as bcrypt from 'bcrypt';
 import { TeacherLoginDto } from './dtos/teacher_login.dto';
 import { MailerService } from '@nestjs-modules/mailer';
+import { StatusEntity } from 'src/student/tables/status.entity';
 //import { Course } from './tables/course.entity';
 
 @Injectable()
 export class TeacherService {
+<<<<<<< HEAD
  // courseRepository: any;
   // createStatus(statusDto: StatusDto) {
   //   return this.statusRepository.save(statusDto);
@@ -20,6 +20,12 @@ export class TeacherService {
   constructor(
     @InjectRepository(TeacherEntity) private readonly teacherRepository: Repository<TeacherEntity>,
      @InjectRepository(Status) private readonly statusRepository: Repository<Status>,
+=======
+
+  constructor(
+    @InjectRepository(TeacherEntity) private readonly teacherRepository: Repository<TeacherEntity>,
+     @InjectRepository(StatusEntity) private readonly statusRepository: Repository<StatusEntity>,
+>>>>>>> main
    private readonly mailerService: MailerService, // Inject MailerService
   ) {}
 

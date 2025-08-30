@@ -3,6 +3,7 @@ import { StudentEntity } from "./student.entity";
 import { ProgramEntity } from "./program.entity";
 import { QuestionCqSSCEntity } from "./question_cq_ssc.entity";
 import { ExamSSCEntity } from "./exam_ssc.entity";
+import { TeacherEntity } from "src/teacher/tables/teacher.entity";
 
 @Entity('status')
 export class StatusEntity {
@@ -24,6 +25,10 @@ export class StatusEntity {
     // One status can be associated with many students
     @OneToMany(() => StudentEntity, student => student.status)
     students: StudentEntity[];
+
+     // One status can be associated with many students
+     @OneToMany(() => TeacherEntity, teacher => teacher.status)
+     teachers: TeacherEntity[];
 
     // One status can be associated with many programs
     @OneToMany(() => ProgramEntity, program => program.status)
