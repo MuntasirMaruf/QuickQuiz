@@ -11,23 +11,11 @@ import { StatusEntity } from 'src/student/tables/status.entity';
 
 @Injectable()
 export class TeacherService {
-<<<<<<< HEAD
- // courseRepository: any;
-  // createStatus(statusDto: StatusDto) {
-  //   return this.statusRepository.save(statusDto);
-  // }
-  
   constructor(
     @InjectRepository(TeacherEntity) private readonly teacherRepository: Repository<TeacherEntity>,
-     @InjectRepository(Status) private readonly statusRepository: Repository<Status>,
-=======
-
-  constructor(
-    @InjectRepository(TeacherEntity) private readonly teacherRepository: Repository<TeacherEntity>,
-     @InjectRepository(StatusEntity) private readonly statusRepository: Repository<StatusEntity>,
->>>>>>> main
-   private readonly mailerService: MailerService, // Inject MailerService
-  ) {}
+    @InjectRepository(StatusEntity) private readonly statusRepository: Repository<StatusEntity>,
+    private readonly mailerService: MailerService, // Inject MailerService
+  ) { }
 
   async teacherLogin(teacherLoginDto: TeacherLoginDto): Promise<TeacherEntity> {
     const teacher = await this.teacherRepository.findOne({ where: { username: teacherLoginDto.username } });
@@ -43,28 +31,28 @@ export class TeacherService {
 
 
 
-   async findAll(): Promise<TeacherEntity[]> {
+  async findAll(): Promise<TeacherEntity[]> {
     return this.teacherRepository.find({ relations: ['status'] });
   }
-  
+
   async registerTeacher(teacherDto: TeacherDto): Promise<TeacherEntity | string> {
     const teacher = this.teacherRepository.create(teacherDto);
     const status = await this.statusRepository.findOneBy({ id: 1 });
-    if(!status){
+    if (!status) {
       return "Status not found";
     }
     teacher.status = status;
-       const saltRounds = 10;
-            const hashed = await bcrypt.hash(teacherDto.password, saltRounds);
-            if (!hashed) {
-                return "Error hashing password.";
-            }
-            teacher.password = hashed;
+    const saltRounds = 10;
+    const hashed = await bcrypt.hash(teacherDto.password, saltRounds);
+    if (!hashed) {
+      return "Error hashing password.";
+    }
+    teacher.password = hashed;
 
     this.sendEmail(teacherDto.email, 'Welcome to our platform', 'Welcome to QuickQuiz');
     return this.teacherRepository.save(teacher);
   }
-     // //send email
+  // //send email
   // async updateStatus(id: number, status: string): Promise<Teacher | null> {
   //   const teacher = await this.teacherRepository.findOne({ where: { id } });
   //   if (teacher) {
@@ -73,21 +61,21 @@ export class TeacherService {
   //   }
   //   return null;
   // }
-               //ACTIVE-STATUS
+  //ACTIVE-STATUS
   // async getInactiveTeachers(): Promise<Teacher[]> {
   //   return this.teacherRepository.find({ where: { status: 'inactive' } });
   // }
-              //AGE LESS THEN
-//   async getTeachersBelowAge(age: number): Promise<Teacher[]> {
-//   return this.teacherRepository.find({
-//     where: {
-//       age: LessThan(age), // Changed from MoreThan to LessThan
-//     },
-//   });
-// }
+  //AGE LESS THEN
+  //   async getTeachersBelowAge(age: number): Promise<Teacher[]> {
+  //   return this.teacherRepository.find({
+  //     where: {
+  //       age: LessThan(age), // Changed from MoreThan to LessThan
+  //     },
+  //   });
+  // }
 
-           //send email      
- async sendEmail(to: string, subject: string, text: string): Promise<void> {
+  //send email      
+  async sendEmail(to: string, subject: string, text: string): Promise<void> {
     await this.mailerService.sendMail({
       to,
       subject,
@@ -116,7 +104,7 @@ export class TeacherService {
     }
     return { message: `Teacher with ID ${id} not found.` };
   }
-     //m-one
+  //m-one
   // async registerTeacher(teacherDto: TeacherDto): Promise<Teacher> {
   //   const { courses, ...teacherData } = teacherDto;
   //   const teacher = this.teacherRepository.create(teacherData);
@@ -146,30 +134,30 @@ export class TeacherService {
     if (teacher && status) {
       teacher.status = status;
       return this.teacherRepository.save(teacher);
-      }
+    }
     return null;
   }
 
-//   //=============course---
-//   async assignCourseToTeacher(teacherId: number, courseId: number): Promise<Teacher> {
-//   const teacher = await this.teacherRepository.findOne({ 
-//     where: { id: teacherId }, 
-//     relations: ['courses'] 
-//   });
-//   const course = await this.courseRepository.findOne({ where: { id: courseId } });
+  //   //=============course---
+  //   async assignCourseToTeacher(teacherId: number, courseId: number): Promise<Teacher> {
+  //   const teacher = await this.teacherRepository.findOne({ 
+  //     where: { id: teacherId }, 
+  //     relations: ['courses'] 
+  //   });
+  //   const course = await this.courseRepository.findOne({ where: { id: courseId } });
 
-//   if (teacher && course) {
-//     teacher.courses.push(course);
-//     return this.teacherRepository.save(teacher);
-//   }
-//   return null;
-// }
+  //   if (teacher && course) {
+  //     teacher.courses.push(course);
+  //     return this.teacherRepository.save(teacher);
+  //   }
+  //   return null;
+  // }
 
-// async getTeacherCourses(teacherId: number): Promise<Course[]> {
-//   const teacher = await this.teacherRepository.findOne({ 
-//     where: { id: teacherId }, 
-//     relations: ['courses'] 
-//   });
-//   return teacher?.courses || [];
-// }
+  // async getTeacherCourses(teacherId: number): Promise<Course[]> {
+  //   const teacher = await this.teacherRepository.findOne({ 
+  //     where: { id: teacherId }, 
+  //     relations: ['courses'] 
+  //   });
+  //   return teacher?.courses || [];
+  // }
 }

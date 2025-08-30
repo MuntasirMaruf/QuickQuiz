@@ -4,10 +4,6 @@ import { diskStorage, MulterError } from 'multer';
 import { TeacherService } from './teacher.service';
 import { TeacherDto } from './dtos/teacher.dto';
 import { TeacherEntity } from './tables/teacher.entity';
-<<<<<<< HEAD
-import { StatusDto } from './dtos/status.dto';
-=======
->>>>>>> main
 import { TeacherLoginDto } from './dtos/teacher_login.dto';
 import { TeacherSessionGaurd } from './session_teacher.gaurd';
 
