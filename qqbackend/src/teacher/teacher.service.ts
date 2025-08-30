@@ -1,30 +1,24 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThan, LessThan } from 'typeorm';
-import { Teacher } from './tables/teacher.entity';
+import { TeacherEntity } from './tables/teacher.entity';
 import { TeacherDto } from './dtos/teacher.dto';
-import { StatusDto } from './dtos/status.dto';
-import { Status } from './tables/status.entity';
 import * as bcrypt from 'bcrypt';
 import { TeacherLoginDto } from './dtos/teacher_login.dto';
 import { MailerService } from '@nestjs-modules/mailer';
+import { StatusEntity } from 'src/student/tables/status.entity';
 //import { Course } from './tables/course.entity';
 
 @Injectable()
 export class TeacherService {
-  courseRepository: any;
-  
-  // createStatus(statusDto: StatusDto) {
-  //   return this.statusRepository.save(statusDto);
-  // }
-  
+
   constructor(
-    @InjectRepository(Teacher) private readonly teacherRepository: Repository<Teacher>,
-     @InjectRepository(Status) private readonly statusRepository: Repository<Status>,
+    @InjectRepository(TeacherEntity) private readonly teacherRepository: Repository<TeacherEntity>,
+     @InjectRepository(StatusEntity) private readonly statusRepository: Repository<StatusEntity>,
    private readonly mailerService: MailerService, // Inject MailerService
   ) {}
 
-  async teacherLogin(teacherLoginDto: TeacherLoginDto): Promise<Teacher> {
+  async teacherLogin(teacherLoginDto: TeacherLoginDto): Promise<TeacherEntity> {
     const teacher = await this.teacherRepository.findOne({ where: { username: teacherLoginDto.username } });
     if (!teacher) {
       throw new UnauthorizedException('Invalid username or password');
@@ -38,11 +32,11 @@ export class TeacherService {
 
 
 
-   async findAll(): Promise<Teacher[]> {
+   async findAll(): Promise<TeacherEntity[]> {
     return this.teacherRepository.find({ relations: ['status'] });
   }
   
-  async registerTeacher(teacherDto: TeacherDto): Promise<Teacher | string> {
+  async registerTeacher(teacherDto: TeacherDto): Promise<TeacherEntity | string> {
     const teacher = this.teacherRepository.create(teacherDto);
     const status = await this.statusRepository.findOneBy({ id: 1 });
     if(!status){
@@ -90,11 +84,11 @@ export class TeacherService {
     });
   }
 
-  async getTeacherById(id: number): Promise<Teacher | null> {
+  async getTeacherById(id: number): Promise<TeacherEntity | null> {
     return this.teacherRepository.findOne({ where: { id } });
   }
 
-  async updateTeacher(id: number, teacherDto: TeacherDto): Promise<Teacher | null> {
+  async updateTeacher(id: number, teacherDto: TeacherDto): Promise<TeacherEntity | null> {
     const teacher = await this.teacherRepository.findOne({ where: { id } });
     if (teacher) {
       Object.assign(teacher, teacherDto);
@@ -135,7 +129,7 @@ export class TeacherService {
   //   return this.teacherRepository.save(teacher);
   // }
 
-  async updateTeacherStatus(tid: number, sid: number): Promise<Teacher | null> {
+  async updateTeacherStatus(tid: number, sid: number): Promise<TeacherEntity | null> {
     const teacher = await this.teacherRepository.findOneBy({ id: tid });
     const status = await this.statusRepository.findOneBy({ id: sid });
     if (teacher && status) {

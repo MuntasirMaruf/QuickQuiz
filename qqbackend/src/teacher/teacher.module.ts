@@ -4,10 +4,13 @@ import { TeacherService } from './teacher.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TeacherEntity } from './tables/teacher.entity';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { StudentEntity } from 'src/student/tables/student.entity';
+import { AdminEntity } from 'src/admin/admin.entity';
+import { StatusEntity } from 'src/student/tables/status.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([TeacherEntity]),
+    TypeOrmModule.forFeature([TeacherEntity, StudentEntity, AdminEntity, StatusEntity]),
     MailerModule.forRoot({
       transport: {
         host: 'smtp.gmail.com',
@@ -24,6 +27,6 @@ import { MailerModule } from '@nestjs-modules/mailer';
   controllers: [TeacherController],
   providers: [TeacherService],
 })
-export class TeacherModule {}
+export class TeacherModule { }
 
 

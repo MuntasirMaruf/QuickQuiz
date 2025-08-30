@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn, PrimaryColumn, BeforeInsert, ManyToMany, OneToOne, ManyToOne, JoinColumn, CreateDateColumn } from "typeorm";
 import { StatusEntity } from "./status.entity";
 import { ProgramEntity } from "./program.entity";
+import { AdminEntity } from "src/admin/admin.entity";
 @Entity('students')
 export class StudentEntity {
   @PrimaryColumn()
@@ -12,10 +13,10 @@ export class StudentEntity {
   @Column({ type: 'varchar', length: 150, nullable: true })
   fullname: string;
 
-  @Column({type: 'varchar', length: 200, unique: true })
+  @Column({ type: 'varchar', length: 200, unique: true })
   email: string;
 
-  @Column( { type: 'varchar', length: 15, unique: true })
+  @Column({ type: 'varchar', length: 15, unique: true })
   phone_number: string;
 
   @Column()
@@ -46,9 +47,9 @@ export class StudentEntity {
   setDefaultValues() {
     const age = this.calculateAge(this.date_of_birth);
     const middle = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
-    
+
     this.id = parseInt(`${middle}0${age}`);
-    
+
     this.created_at = this.created_at || new Date();
   }
 
@@ -62,15 +63,20 @@ export class StudentEntity {
   @JoinColumn({ name: 'program_id' })
   program: ProgramEntity;
 
+  @ManyToOne(() => AdminEntity, admin => admin.students, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'admin_id' }) // optional
+  admin: AdminEntity;
+
+
   private calculateAge(birthDate: Date): number {
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
-    
+
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
-    
+
     return age;
   }
 }
