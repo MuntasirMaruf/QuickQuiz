@@ -1,9 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, ManyToMany } from 'typeorm';
 import { StatusEntity } from 'src/student/tables/status.entity';
 import { AdminEntity } from 'src/admin/admin.entity';
-//import { Course } from './course.entity';
-//import { StatusEntity } from './status.entity';
-//import { ProgramEntity } from './program.entity';
 
 
 @Entity('teachers')
