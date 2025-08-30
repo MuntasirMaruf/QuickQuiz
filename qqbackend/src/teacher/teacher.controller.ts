@@ -1,100 +1,99 @@
-import { Controller, Post, Get, Put, Param, Body, UsePipes, ValidationPipe,ParseIntPipe, Query, Patch, Delete, Session, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Put, Param, Body, UsePipes, ValidationPipe, ParseIntPipe, Query, Patch, Delete, Session, UseGuards } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage, MulterError } from 'multer';
 import { TeacherService } from './teacher.service';
 import { TeacherDto } from './dtos/teacher.dto';
-import { Teacher } from './tables/teacher.entity';
-import { StatusDto } from './dtos/status.dto';
+import { TeacherEntity } from './tables/teacher.entity';
 import { TeacherLoginDto } from './dtos/teacher_login.dto';
 import { TeacherSessionGaurd } from './session_teacher.gaurd';
 
 @Controller('teacher')
 export class TeacherController {
-  constructor(private readonly teacherService: TeacherService) {}
+  constructor(private readonly teacherService: TeacherService) { }
 
 
   @Post('login')
-  async teacherLogin(@Body() teacherLoginDto: TeacherLoginDto, @Session() session: Record<string, any> )  {
+  async teacherLogin(@Body() teacherLoginDto: TeacherLoginDto, @Session() session: Record<string, any>) {
     const teacher = await this.teacherService.teacherLogin(teacherLoginDto);
 
-    if(!teacher){
-      return {message: 'Invalid credentials', status: 401}
+    if (!teacher) {
+      return { message: 'Invalid credentials', status: 401 }
     }
     session.teacher = teacher;
-    return {message: 'Logged in successfully', status: 200}
+    return { message: 'Logged in successfully', status: 200 }
   }
 
   @Post('logout')
-  async teacherLogout(@Body() teacherLoginDto: TeacherLoginDto, @Session() session: Record<string, any> )  {
+  async teacherLogout(@Body() teacherLoginDto: TeacherLoginDto, @Session() session: Record<string, any>) {
     const teacher = await this.teacherService.getTeacherById(session.teacher.id);
 
-    if(!teacher){
-      return {message: 'Invalid credentials', status: 401}
+    if (!teacher) {
+      return { message: 'Invalid credentials', status: 401 }
     }
     session.destroy();
-    return {message: 'Logged out successfully', status: 200}
+    return { message: 'Logged out successfully', status: 200 }
   }
 
 
-     // GET all teachers
+  // GET all teachers
   @UseGuards(TeacherSessionGaurd)
   @Get('all')
   findAll() {
     return this.teacherService.findAll();
   }
 
-    // POST create new teacher
+  // POST create new teacher
   @Post("register")
-  @UsePipes(new ValidationPipe({transform: true}))
+  @UsePipes(new ValidationPipe({ transform: true }))
   registerTeacher(@Body() teacherDto: TeacherDto) {
-  return this.teacherService.registerTeacher(teacherDto);
+    return this.teacherService.registerTeacher(teacherDto);
   }
-   // Patch update_status  teacher
+  // Patch update_status  teacher
   // @Patch("update_status")
   // updateStatus(@Body() updateStatusDto: UpdateStatusDto) {
   // const { id, status } = updateStatusDto;
   // return this.teacherService.updateStatus(id, status);
   // }
 
-// New route to get inactive teachers
-//   @Get('inactive')
-//   getInactiveTeachers() {
-//     return this.teacherService.getInactiveTeachers();
-//   }
-//         // New route to get teachers age
-//   @Get('byage/:age')async getTeachersBelowAge(
-//   @Param('age', ParseIntPipe) age: number): Promise<Teacher[]> {
-//   return this.teacherService.getTeachersBelowAge(age);
-// }
+  // New route to get inactive teachers
+  //   @Get('inactive')
+  //   getInactiveTeachers() {
+  //     return this.teacherService.getInactiveTeachers();
+  //   }
+  //         // New route to get teachers age
+  //   @Get('byage/:age')async getTeachersBelowAge(
+  //   @Param('age', ParseIntPipe) age: number): Promise<Teacher[]> {
+  //   return this.teacherService.getTeachersBelowAge(age);
+  // }
 
   // Route to get teacher by ID
   @Get('byid/:id')
-  getTeacherById(@Param('id',ParseIntPipe) id: number) {
+  getTeacherById(@Param('id', ParseIntPipe) id: number) {
     return this.teacherService.getTeacherById(id);
   }
-   // Route to update teacher info
+  // Route to update teacher info
   @Put('update/:id')
   @UsePipes(new ValidationPipe({ transform: true }))
-  updateTeacher(@Param('id',ParseIntPipe) id: number, @Body() teacherDto: TeacherDto) {
+  updateTeacher(@Param('id', ParseIntPipe) id: number, @Body() teacherDto: TeacherDto) {
     return this.teacherService.updateTeacher(id, teacherDto);
   }
 
   //Route to delete teacher by ID
   @Delete('delete/:id')
-  deleteTeacher(@Param('id',ParseIntPipe) id: number) {
+  deleteTeacher(@Param('id', ParseIntPipe) id: number) {
     //return this.teacherService.deleteTeacher(id);
     return this.teacherService.updateTeacherStatus(id, 3); // soft delete
   }
-@Put('update-status')
-async updateTeacherStatus(@Query() query: { tid: number, sid: number }) {
-  return this.teacherService.updateTeacherStatus(query.tid, query.sid);
-}
+  @Put('update-status')
+  async updateTeacherStatus(@Query() query: { tid: number, sid: number }) {
+    return this.teacherService.updateTeacherStatus(query.tid, query.sid);
+  }
 
   // @Post("create/status")
   // createStatus(@Body() statusDto: StatusDto) {
   //   return this.teacherService.createStatus(statusDto);
   // }
- 
+
   // 
   // // @UseInterceptors(FileInterceptor('myfile', {
   // //   fileFilter: (req, file, callback) => {
