@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, JoinColumn } from "typeorm";
-import { Teacher } from "./teacher.entity";
+import { TeacherEntity } from "./teacher.entity";
 
 
 @Entity('status')
@@ -19,6 +19,6 @@ export class Status {
     @UpdateDateColumn({ type: 'timestamp' })
     updated_at: Date;
 
-    @OneToMany(()=> Teacher, teacher => teacher.status)
-    teachers: Teacher[];
+    @OneToMany(()=> TeacherEntity, teacher => teacher.status)
+    teachers: TeacherEntity[];
 }
