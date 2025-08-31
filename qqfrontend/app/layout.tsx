@@ -30,7 +30,7 @@ export default function RootLayout({
       >
         <header className="bg-gray-900 text-white shadow-md">
           <div className="max-w-6xl mx-auto flex justify-between items-center p-4">
-            <h1 className="text-2xl font-bold">QuickQuiz</h1>
+            <Link href="" className="text-2xl font-bold">QuickQuiz</Link>
             <nav className="space-x-6">
               <Link href="/" className="hover:text-yellow-400 transition">Home</Link>
               <Link href="/about" className="hover:text-yellow-400 transition">About</Link>
