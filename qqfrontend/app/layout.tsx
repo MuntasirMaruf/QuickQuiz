@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Link from "next/link";
+import TopNavbar from "./components/TopNavbar";
+import BottomNavbar from "./components/BottomNavbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,30 +29,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <header className="bg-gray-900 text-white shadow-md">
-          <div className="max-w-6xl mx-auto flex justify-between items-center p-4">
-            <Link href="" className="text-2xl font-bold">QuickQuiz</Link>
-            <nav className="space-x-6">
-              <Link href="/" className="hover:text-yellow-400 transition">Home</Link>
-              <Link href="/about" className="hover:text-yellow-400 transition">About</Link>
-              <Link href="/contact" className="hover:text-yellow-400 transition">Contact</Link>
-            </nav>
-          </div>
-        </header>
+        <TopNavbar />
 
         <main className="max-w-6xl mx-auto p-6">{children}</main>
 
-        <footer className="bg-gray-100 border-t mt-12">
-          <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center p-4 text-gray-600">
-            <p>&copy; 2025 Your Company. All rights reserved.</p>
-            <nav className="flex space-x-4 mt-2 md:mt-0">
-              <a href="/privacy" className="hover:text-gray-900 transition">Privacy Policy</a>
-              <a href="/terms" className="hover:text-gray-900 transition">Terms of Service</a>
-              <a href="/cookies" className="hover:text-gray-900 transition">Cookie Policy</a>
-            </nav>
-          </div>
-        </footer>
-
+        <BottomNavbar />
 
       </body>
     </html>

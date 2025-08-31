@@ -54,7 +54,7 @@ export default function LoginPage() {
                 <p>Don't have an account? <Link href="/register">Register</Link></p>
                 <br />
                 <div>
-                  <p>Forgot Password? <Link href="/forgot_password"> Forgot_Password</Link></p>
+                    <p>Forgot Password? <Link href="/forgot_password"> Forgot_Password</Link></p>
                 </div>
             </form>
         </div>

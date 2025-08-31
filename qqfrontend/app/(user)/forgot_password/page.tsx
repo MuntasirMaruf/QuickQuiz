@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -11,6 +12,9 @@ export default function ForgotPassword() {
   const [otp_error, setOtpError] = useState("");
   const [otp_success, setOtpSuccess] = useState("");
   const [otpSent, setOtpSent] = useState(false);
+
+  const router = useRouter();
+
 
   const handleSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -38,6 +42,10 @@ export default function ForgotPassword() {
 
     setOtpError("");
     setOtpSuccess("OTP verified! You can reset your password now.");
+
+    setTimeout(() => {
+      router.push("/forgot_password/reset_password");
+    }, 2000);
   };
 
   return (
