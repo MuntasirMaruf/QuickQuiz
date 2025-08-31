@@ -18,7 +18,7 @@ export default function RootLayout({
        <h1> this my navigation var</h1>
         <main className="max-w-7xl ma-auto px-4 sm:px-6 lg:px-8">
         {children}
-       <Register />
+      
         </main>
               <br />
       <br />
