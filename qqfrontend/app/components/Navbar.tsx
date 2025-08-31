@@ -11,11 +11,10 @@ const Navbar = () => {
          <div className="flex items-center">
             <Link href="/" className="font-semibold">QuickQuiz</Link>
           <div className="ml-auto flex items-center gap-6">
-           <Link href="/home">Home</Link>
            <Link href="/about">About</Link>
            <Link href="/contact">Contact</Link>
            <Link href="/login">Login</Link>
-           <Link href="/registraion">REg</Link>
+           <Link href="/components/Register">Registration</Link>
           </div>
            <br />
             

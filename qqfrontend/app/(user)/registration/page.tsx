@@ -1,11 +1,14 @@
 import React from 'react'
+import Register from "../../components/Register";
+export default function RegisterPage() {
 
-const page = () => {
-    return (
-        <div>
-
-        </div>
-    )
+  return (
+    <>
+     <h1> REGISTRATION FORM</h1>
+     <Register />
+    </>
+  );
+  
 }
 
-export default page
+

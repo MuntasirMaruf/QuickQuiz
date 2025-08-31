@@ -1,84 +1,58 @@
-// "use client";
+"use client";
 
-// import { useState } from 'react';
-// import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import Register from "../../components/Register";
 
-// export default function LoginPage() {
-//   const [username, setUsername] = useState<string>('');
-//   const [password, setPassword] = useState<string>('');
-//   const [error, setError] = useState<string>('');
-//   const router = useRouter();
+export default function LoginPage() {
+  const [username, setUsername] = useState<string>('akash');
+  const [password, setPassword] = useState<string>('111111');
+  const [error, setError] = useState<string>('');
+  const router = useRouter();
 
-//   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
-//     e.preventDefault();
-//     // Basic client-side validation
-//     if (!username || !password) {
-//       setError('Please fill in all fields');
-//       return;
-//     }
-//     if (password.length < 6) {
-//       setError('Password must be at least 6 characters');
-//       return;
-//     }
- 
-//     console.log('Login attempt:', { username, password });
+  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
    
-//     router.push('/dashboard');
-//   };
+    if (!username || !password) {
+      setError('Please fill in all fields');
+      return;
+    }
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return;
+    }
+ 
+    console.log('Login attempt:', { username, password });
+   
+    router.push('/dashboard');
+  };
 
-//   return (
-//     <div>
-//       <h2>Login</h2>
-//       <form onSubmit={handleLogin}>
-//         <input
-//           type="text"
-//           value={username}
-//           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-//             setUsername(e.target.value)
-//           }
-//           placeholder="Username"
-//           required
-//         />
-//         <br />
-//         <input
-//           type="password"
-//           value={password}
-//           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-//             setPassword(e.target.value)
-//           }
-//           placeholder="Password"
-//           required
-//         />
-//         <br />
-       
-//         <button type="submit">LOG IN</button>
-//       </form>
-//     </div>
-//   );
-// }
-
-
-
-export default function Login() {
   return (
-    <>
     <div className="py-4 shadow">
-      <h1>Login Page</h1>
-      <br />
-      <form className="max-w-7xl ma-auto px-4 sm:px-6 lg:px-8 ">
-        <div>
-          <label>Username</label>
-          <input name="username" />
-        </div>
+      <h2>Login</h2>
+      <form onSubmit={handleLogin}>
+        <label>Username : </label>
+        <input type="text"  value={username}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setUsername(e.target.value)
+          }
+          placeholder="username"  
+        />
         <br />
-        <div>
-          <label>Password</label>
-          <input name="password" type="password" />
-        </div>
+           <label>Password : </label>
+        <input type="password"  value={password}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setPassword(e.target.value)
+          }
+          placeholder="password"   
+        />
         <br />
-        <button type="submit">Login</button>
+       
+        <button type="submit">LOG IN</button>
+         <p>Don't have an account? <Link href="/components/Register">Register</Link></p>
       </form>
-      </div>
-    </>
+    </div>
   );
 }
+

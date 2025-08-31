@@ -4,6 +4,9 @@
 //     <div>
 //       <h1>Welcome to the Teacher Portal</h1>
 //       <p>This is the home page of our educational platform.</p>
+
+
+
       
 //       <div style={{ marginTop: '20px' }}>
 //         <a href="/user/login" style={{ 
@@ -29,6 +32,7 @@
 //     </div>
 //   );
 // }
+import Link from "next/link";
 export default function TeacherDashboard() {
   return (
     <div>
@@ -37,22 +41,22 @@ export default function TeacherDashboard() {
         <div style={{ border: '1px solid #ccc', padding: '15px' }}>
           <h2>Students</h2>
           <p>Manage student information</p>
-          <a href="/teacher/students">View Students</a>
+          <Link href="/teacher/students">View Students</Link>
         </div>
         <div style={{ border: '1px solid #ccc', padding: '15px' }}>
           <h2>Assignments</h2>
           <p>Create and grade assignments</p>
-          <a href="/teacher/assignments">View Assignments</a>
+          <Link href="/teacher/assignments">View Assignments</Link>
         </div>
         <div style={{ border: '1px solid #ccc', padding: '15px' }}>
           <h2>Schedule</h2>
           <p>View your class schedule</p>
-          <a href="/teacher/schedule">View Schedule</a>
+          <Link href="/teacher/schedule">View Schedule</Link>
         </div>
         <div style={{ border: '1px solid #ccc', padding: '15px' }}>
           <h2>Messages</h2>
           <p>Communicate with students and parents</p>
-          <a href="/teacher/messages">View Messages</a>
+          <Link href="/teacher/messages">View Messages</Link>
         </div>
       </div>
     </div>
