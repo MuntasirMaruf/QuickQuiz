@@ -95,9 +95,9 @@ export class AdminController {
   @UseInterceptors(FileInterceptor('file'))
   async UploadFile(@UploadedFile() file: Express.Multer.File, @Body() adminData: adminData): Promise<object> {
     console.log(file);
-    adminData.photo = file.originalname;
+    adminData.display_picture = file.originalname;
     const salt = await bcrypt.genSalt();
-    adminData.pass = await bcrypt.hash(adminData.pass, salt);
+    adminData.password = await bcrypt.hash(adminData.password, salt);
 
     return this.adminService.addAdminDto(adminData);
   }

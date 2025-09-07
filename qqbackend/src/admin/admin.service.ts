@@ -103,7 +103,7 @@ export class AdminService {
       );
     }
     else {
-      const isMatch = await bcrypt.compare(pass, check.pass);
+      const isMatch = await bcrypt.compare(pass, check.password);
       if (!isMatch) {
         throw new HttpException(
           {
