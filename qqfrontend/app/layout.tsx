@@ -31,7 +31,8 @@ export default function RootLayout({
       >
         <TopNavbar />
 
-        <main className="max-w-6xl mx-auto p-6">{children}</main>
+        <main>{children}</main>
+        {/* className="max-w-6xl mx-auto p-0" */}
 
         <BottomNavbar />
 

@@ -4,7 +4,7 @@ import "./globals.css";
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center py-80 bg-gray-800 border-2 border-black rounded-md ">
+    <div className="max-w-6xl mx-auto m-6 flex flex-col items-center py-80 bg-gray-800 border-2 border-black rounded-md ">
       <h2 className="text-4xl font-bold mb-8 text-white">Welcome to QuickQuiz</h2>
 
       <div className="flex space-x-6">

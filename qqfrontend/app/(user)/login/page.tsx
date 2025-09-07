@@ -29,7 +29,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="w-full background-my-4 h-auto w-full rounded-md border-2 border-violet-600 bg-white-200 p-2">
+        <div className="max-w-6xl mx-auto m-6 flex flex-col items-center py-80 bg-gray-800 border-2 border-black rounded-md">
             <h2>Login</h2>
             <form onSubmit={handleLogin}>
                 <label>Username : </label>

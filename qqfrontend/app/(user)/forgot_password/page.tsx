@@ -49,7 +49,7 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="flex flex-col items-center py-50 bg-gray-800 border-2 border-black rounded-md">
+    <div className="max-w-6xl mx-auto m-6 flex flex-col items-center py-50 bg-gray-800 border-2 border-black rounded-md">
       <h3 className="text-4xl font-bold mb-8 text-white">Forgot Password</h3>
 
       <form className="flex flex-col space-y-4 w-80" noValidate>
