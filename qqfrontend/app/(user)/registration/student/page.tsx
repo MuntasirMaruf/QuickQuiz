@@ -171,7 +171,7 @@ const StudentRegistration = () => {
                 `${process.env.NEXT_PUBLIC_API_URL}/student/register`,
                 formData
             );
-            alert("Registration successful: " + JSON.stringify(res.data));
+            alert("Registration successful");
 
             // Clear form after successful registration
             setUsername('');
