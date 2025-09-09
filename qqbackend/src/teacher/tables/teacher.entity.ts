@@ -34,6 +34,15 @@ export class TeacherEntity {
 
   @Column({ type: 'varchar', length: 200, nullable: true })
   display_picture: string;
+   @Column({
+    type: 'numeric',
+    nullable: true,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string | null) => (value !== null ? parseFloat(value) : null),
+    },
+  })
+  salary: number;
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;

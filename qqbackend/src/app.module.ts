@@ -12,7 +12,7 @@ import { TeacherModule } from './teacher/teacher.module';
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: 'al1aH',
+      password: 'akash123',
       database: 'quickquiz_db',
       autoLoadEntities: true, // Automatically load entities from the application
       synchronize: true, // Synchronize the database schema with the entities

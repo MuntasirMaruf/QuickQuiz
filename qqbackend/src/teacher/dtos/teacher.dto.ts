@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsDate, IsInt, IsNotEmpty, IsOptional, IsString, Matches, Max, MaxLength, Min, MinLength } from 'class-validator';
+import { IsDate, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, Matches, Max, MaxLength, Min, MinLength } from 'class-validator';
 
 export class TeacherDto {
 
@@ -45,6 +45,11 @@ export class TeacherDto {
   @IsOptional()
   @IsString()
   display_picture: string;
+  
+  // ✅ Salary - no min/max 
+  @IsNumber({}, { message: 'Salary must be a valid number' })
+  @Type(() => Number) // ensures incoming value is casted to number
+  salary: number;
 
 
   //  @IsInt()
