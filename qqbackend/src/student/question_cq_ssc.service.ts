@@ -17,14 +17,14 @@ export class SSCQuestionCQService {
         @InjectRepository(ExamSSCEntity) private readonly examRepository: Repository<ExamSSCEntity>,
         @InjectRepository(ExamQuestionSSCEntity) private readonly examQuestionRepository: Repository<ExamQuestionSSCEntity>,
         @InjectRepository(StatusEntity) private readonly statusRepository: Repository<StatusEntity>
-    ) {}
+    ) { }
 
     async createQuestion(questionDto: QuestionCqSSCDto): Promise<QuestionCqSSCEntity> {
         const status = await this.statusRepository.findOneBy({ id: 1 }); // Assuming id 1 is 'Valid'
         if (!status) {
             throw new NotFoundException("Status 'Valid' not found.");
         }
-        
+
         const question = this.questionRepository.create(questionDto);
         question.status = status;
 
@@ -33,6 +33,14 @@ export class SSCQuestionCQService {
 
     async findAllQuestions(): Promise<QuestionCqSSCEntity[]> {
         return await this.questionRepository.find();
+    }
+
+    async findQuestionById(id: number): Promise<QuestionCqSSCEntity | null> {
+        return await this.questionRepository.findOneBy({ id: id });
+    }
+
+    async findExamById(id: number): Promise<ExamSSCEntity | null> {
+        return await this.examRepository.findOneBy({ id: id });
     }
 
     async createExam(examDto: ExamSSCDto): Promise<ExamSSCEntity> {

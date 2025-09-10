@@ -1,11 +1,11 @@
-import { Body, Controller, Get, Post, UsePipes, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Get, Post, UsePipes, ValidationPipe, Param, ParseIntPipe } from "@nestjs/common";
 import { SSCQuestionCQService } from "./question_cq_ssc.service";
 import { QuestionCqSSCDto } from "./dtos/question_cq_ssc.dto";
 
 
 @Controller('exam_question_ssc')
 export class SSCQuestionCQController {
-    constructor(private readonly sscQuestionCQService: SSCQuestionCQService) {}
+    constructor(private readonly sscQuestionCQService: SSCQuestionCQService) { }
 
     @Post('create/question')
     @UsePipes(new ValidationPipe({ transform: true }))
@@ -19,6 +19,10 @@ export class SSCQuestionCQController {
         return this.sscQuestionCQService.findAllQuestions();
     }
 
+    @Get('get/question/:id')
+    async getQuestionById(@Param('id', ParseIntPipe) id: number) {
+        return this.sscQuestionCQService.findQuestionById(id);
+    }
     @Post('create/exam')
     @UsePipes(new ValidationPipe({ transform: true }))
     async createExam(@Body() examDto: any) {
@@ -28,6 +32,11 @@ export class SSCQuestionCQController {
     @Get('all/exams')
     async getAllExams() {
         return this.sscQuestionCQService.findAllExams();
+    }
+
+    @Get('get/exam/:id')
+    async getExamById(@Param('id', ParseIntPipe) id: number) {
+        return this.sscQuestionCQService.findExamById(id);
     }
 
 
