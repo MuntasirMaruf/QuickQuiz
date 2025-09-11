@@ -92,7 +92,7 @@ export class AdminController {
   // }
   @Post('/addAdminnew')
   @UsePipes(new ValidationPipe)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('profilePic'))
   async UploadFile(@UploadedFile() file: Express.Multer.File, @Body() adminData: adminData): Promise<object> {
     console.log(file);
     adminData.display_picture = file.originalname;
@@ -101,6 +101,7 @@ export class AdminController {
 
     return this.adminService.addAdminDto(adminData);
   }
+  
   //   @Post('/loginAdmin')
   // async loginSession(@Body(){ id, pass }: adminData, @Session() session){
 
@@ -115,6 +116,22 @@ export class AdminController {
   //   console.log(session);
   //  }
   // }
+  @Post('/check-username')
+async checkUsername(@Body() body: { username: string }) {
+  const exists = await this.adminService.checkUsernameExists(body.username);
+  return { exists }; // { exists: true/false }
+}
+@Post('/check-email')
+async checkEmail(@Body() body: { email: string }) {
+  const exists = await this.adminService.checkEmailExists(body.email);
+  return { exists }; // { exists: true/false }
+}
+@Post('/check-phone')
+async checkPhone(@Body() body: { phone_number: string }) {
+  const exists = await this.adminService.checkPhoneExists(body.phone_number);
+  return { exists }; // { exists: true/false }
+}
+
 
   @Post('/loginAdmin')
   async loginSession(@Body() body: adminLoginDto, @Session() session) {

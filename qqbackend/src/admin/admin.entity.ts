@@ -19,7 +19,7 @@ export class AdminEntity {
       @Column({ type: 'varchar', length: 15, unique: true })
       phone_number: string;
     
-      @Column()
+      @Column({ type: 'date', nullable: true })
       date_of_birth: Date;
     
       @Column({ type: 'varchar', length: 20 })

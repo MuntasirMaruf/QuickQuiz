@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { BadRequestException, HttpException, HttpStatus, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { AdminController } from "./admin.controller";
 import { adminData } from "./admin.dto";
 import { AdminEntity } from "./admin.entity";
@@ -76,17 +76,65 @@ export class AdminService {
   // return this.teacherRepository.find({where:{country:'Unknown'}});
   // }
 
-  async addAdminDto(adminData: adminData): Promise<object> {
+async addAdminDto(adminData: adminData): Promise<object> {
+  try {
+    // Check for existing phone number
+    const existingAdmin = await this.adminRepository.findOne({
+      where: { phone_number: adminData.phone_number },
+    });
 
+    if (existingAdmin) {
+      throw new BadRequestException('Phone number already exists.');
+    }
+
+    // Optional: check for email or username uniqueness
+    const existingEmail = await this.adminRepository.findOne({
+      where: { email: adminData.email },
+    });
+    if (existingEmail) {
+      throw new BadRequestException('Email already exists.');
+    }
+
+    const existingUsername = await this.adminRepository.findOne({
+      where: { username: adminData.username },
+    });
+    if (existingUsername) {
+      throw new BadRequestException('Username already exists.');
+    }
+
+    // Save admin
     const admin = await this.adminRepository.save(adminData);
+
     await this.mailerService.sendMail({
       to: 'playinggamesforent@gmail.com',
-
-      subject: 'admin added',
-      text: 'added',
+      subject: 'Admin added',
+      text: 'An admin has been added successfully.',
     });
+
     return admin;
 
+  } catch (error) {
+    console.error('Error saving admin:', error);
+
+    if (error instanceof BadRequestException) throw error;
+
+    throw new InternalServerErrorException('Failed to create admin.');
+  }
+}
+
+async checkUsernameExists(username: string): Promise<boolean> {
+    const admin = await this.adminRepository.findOne({ where: { username } });
+    return !!admin;
+  }
+
+  async checkEmailExists(email: string): Promise<boolean> {
+    const admin = await this.adminRepository.findOne({ where: { email } });
+    return !!admin;
+  }
+
+  async checkPhoneExists(phone_number: string): Promise<boolean> {
+    const admin = await this.adminRepository.findOne({ where: { phone_number } });
+    return !!admin;
   }
 
 
