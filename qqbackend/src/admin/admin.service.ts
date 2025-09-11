@@ -145,7 +145,7 @@ async checkUsernameExists(username: string): Promise<boolean> {
       throw new HttpException(
         {
           statusCode: 4000,
-          message: 'Admin Not Found! Please Check With Valid Id (This is a custom message)',
+          message: 'Admin Not Found! Please Check With Valid Id ',
         },
         HttpStatus.FORBIDDEN,
       );
@@ -156,7 +156,7 @@ async checkUsernameExists(username: string): Promise<boolean> {
         throw new HttpException(
           {
             statusCode: 4001,
-            message: 'Maybe password is incorrect (This is a custom message)',
+            message: 'Maybe password is incorrect ',
           },
           HttpStatus.FORBIDDEN,
         );
