@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Session, UsePipes, ValidationPipe, UnauthorizedException, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Session, UsePipes, ValidationPipe, UnauthorizedException, Get, Req, UseGuards, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dtos/login.dto';
 import { AdminJwtGuard } from './auths/admin_jwt.gaurd';
@@ -59,4 +59,14 @@ export class AuthController {
     console.log(req.user);  // <-- this comes from request['user'] in the guard
     return req.user;
   }
+
+
+  @Get('student/validate')
+  validateStudent(
+    @Query('username') username: string,
+    @Query('password') password: string,
+  ) {
+    return this.authService.validateStudent(username, password);
+  }
 }
+
