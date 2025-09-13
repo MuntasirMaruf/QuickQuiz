@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, ManyToMany } from 'typeorm';
 import { StatusEntity } from 'src/student/tables/status.entity';
 import { AdminEntity } from 'src/admin/admin.entity';
+//import { SubjectEntity } from './subject.entity';
 
 
 @Entity('teachers')
@@ -63,4 +64,11 @@ export class TeacherEntity {
   @ManyToOne(() => AdminEntity, admin => admin.teachers, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'admin_id' }) // optional, if you want custom column name
   admin: AdminEntity;
+  
+// // inside class:
+// @ManyToOne(() => SubjectEntity, (subject) => subject.teachers, {
+//   nullable: true, onDelete: 'SET NULL',
+// })
+// @JoinColumn({ name: 'subject_id' })
+// subject: SubjectEntity | null;
 }

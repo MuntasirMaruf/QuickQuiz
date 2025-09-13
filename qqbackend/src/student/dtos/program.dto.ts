@@ -19,7 +19,6 @@ export class ProgramDto {
     start_date: Date;
 
     @IsOptional()
-    @Matches(/^\d+$/, { message: 'Price must be a positive number' })
     price: number;
 
     @IsInt()

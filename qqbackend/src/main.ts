@@ -11,7 +11,10 @@ async function bootstrap() {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        maxAge: 5 * 60 * 1000, // 3 minutes
+       maxAge: 5 * 60 * 1000, // 3 minutes
+        httpOnly: true,
+        secure: false, // true in production with https
+        sameSite: 'lax', // required for cross-origin cookies
       },
     }),
   );
