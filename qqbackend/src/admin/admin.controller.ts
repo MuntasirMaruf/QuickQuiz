@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Query, Body, UseInterceptors, UploadedFile, UsePipes, ValidationPipe, ParseIntPipe, Put, Delete, UseGuards, Session, HttpException, HttpStatus, Patch, Res } from "@nestjs/common";
+import { Controller, Get, Post, Param, Query, Body, UseInterceptors, UploadedFile, UsePipes, ValidationPipe, ParseIntPipe, Put, Delete, UseGuards, Session, HttpException, HttpStatus, Patch, Res, NotFoundException } from "@nestjs/common";
 import { AdminService } from "./admin.service";
 import { adminData, adminLoginDto } from "./admin.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -11,6 +11,8 @@ import { SessionGuard } from "./admin.session.guard";
 import { StudentDto } from "src/student/dtos/student.dto";
 import { plainToInstance } from "class-transformer";
 import { TeacherDto } from "src/teacher/dtos/teacher.dto";
+import * as Pusher from 'pusher';
+ 
 
 @Controller('admin')
 export class AdminController {
@@ -27,10 +29,10 @@ export class AdminController {
   //  getAbdullahByNameAndId(@Query('name')name:string,@Query('id')id:number):string{
   //    return this.adminService.getAbdullahByNameAndId(name,id);
   //  }
-  @Post('/addAdmin')
-  addAdmin(@Body() adminData: object): object {
-    return this.adminService.addAdmin(adminData);
-  }
+  // @Post('/addAdmin')
+  // addAdmin(@Body() adminData: object): object {
+  //   return this.adminService.addAdmin(adminData);
+  // }
   // @Post('/addAdmin2')
   // addAdmin2(@Body()addAdminData2:adminData):object{
   //     return this.adminService.addAdmin2(addAdminData2);
@@ -187,24 +189,163 @@ async loginSession(
   return await this.adminService.getAdminWithPhotoUrl(admin);
 }
 
+
+  @Post('/logout')
+  async logout(@Session() session: any) {
+    session.destroy((err) => {
+      if (err) console.error('Logout error:', err);
+    });
+    return { message: 'Logged out' };
+  }
+
   @Get('/getAdmin')
   getAllAdmin(): object {
     return this.adminService.getAllAdmin();
   }
 
-  @Put('/updateAdmin/:id')
-  updateAdmin(@Param('id', ParseIntPipe) id: number, @Body() name: AdminEntity): object {
-    return this.adminService.updateAdmin(id, name);
-  }
+  // @Put('/updateAdmin/:id')
+  // updateAdmin(@Param('id', ParseIntPipe) id: number, @Body() name: AdminEntity): object {
+  //   return this.adminService.updateAdmin(id, name);
+  // }
   @Delete('/deleteAdmin/:id')
-  deleteAdmin(@Param('id', ParseIntPipe) id: number): object {
-    return this.adminService.deleteAdmin(id);
+async deleteAdmin(@Param('id', ParseIntPipe) id: number): Promise<{ message: string }> {
+  const deleted = await this.adminService.deleteAdmin(id);
+  if (!deleted) {
+    return { message: `No admin found with ID ${id}` };
   }
+  return { message: `Admin with ID ${id} deleted successfully` };
+}
+ 
   @Post('/addTeacher')
   @UsePipes(new ValidationPipe())
   addTeacher(@Body() teacherData: TeacherDto): object {
     return this.adminService.createTeacher(teacherData);
   }
+
+  @Delete('/deleteTeacher/:id')
+  async deleteTeacherById(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<{ message: string }> {
+    const deleted = await this.adminService.deleteTeacherById(id);
+    if (!deleted) {
+      return { message: `No teacher found with ID ${id}` };
+    }
+    return { message: `Teacher with ID ${id} deleted successfully` };
+  }
+
+  @Delete('/deleteStudent/:username')
+  async deleteStudentByUsername(
+    @Param('username') username: string,
+  ): Promise<{ message: string }> {
+    const deleted = await this.adminService.deleteStudentByUsername(username);
+    if (!deleted) {
+      return { message: `No student found with username "${username}"` };
+    }
+    return { message: `Student with username "${username}" deleted successfully` };
+  }
+
+  // @Get('retrieve/:username')
+  // async getStudentByUsername(@Param('username') username: string) {
+  //   return this.adminService.findByUsername(username);
+  // }
+@Get('/getStudentbyname')
+  async getAllStudentsbyName() {
+    return this.adminService.getAllStudents();
+  }
+
+
+  @Get('retrieve/:username')
+  async getStudentByUsername(@Param('username') username: string) {
+    const student = await this.adminService.findByUsername(username);
+    if (!student) throw new NotFoundException('Student not found');
+    return student;
+  }
+
+  // Update a student by username
+  @Put('update/:username')
+  async updateStudentByUsername(@Param('username') username: string, @Body() body: any) {
+    const updated = await this.adminService.updateStudentByUsername(username, body);
+    if (!updated) throw new NotFoundException('Student not found');
+    return { message: 'Student updated successfully', student: updated };
+  }
+
+  @Get('/getTeachersu')
+  getAllTeachersforupdate() {
+    return this.adminService.getAllTeachersforupdate();
+  }
+@Get('/getTeacher/:id')
+async getTeacher(@Param('id') id: number) {
+  return this.adminService.getTeacherById(id);
+}
+@Put('/updateTeacher/:id')
+async updateTeacher(
+  @Param('id', ParseIntPipe) id: number,
+  @Body() updateTeacherDto: any,
+) {
+  return this.adminService.updateTeacher(id, updateTeacherDto);
+}
+
+@Get("getAdminsforup")
+  async getAllAdmins() {
+    return this.adminService.getAllAdminsforup();
+  }
+
+@Get('getAdminupdate/:id')
+  async getAdminForUpdate(@Param('id', ParseIntPipe) id: number) {
+    return this.adminService.getAdminByIdupdate(id);
+  }
+
+  // Update admin
+  @Put('updateAdminupdate/:id')
+  @UseInterceptors(
+    FileInterceptor('profilePic', {
+      fileFilter: (req, file, cb) => {
+        // Accept only jpg, jpeg, png
+        if (file.originalname.match(/^.*\.(jpg|jpeg|png)$/)) {
+          cb(null, true);
+        } else {
+          cb(new MulterError('LIMIT_UNEXPECTED_FILE', 'profilePic'), false);
+        }
+      },
+      limits: { fileSize: 1024 * 1024 * 2 }, // 2 MB
+      storage: diskStorage({
+        destination: './Uploads', // folder where files are saved
+        filename: (req, file, cb) => {
+          cb(null, Date.now() + file.originalname); // timestamp + original name
+        },
+      }),
+    }),
+  )
+  async updateAdmin(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: any,
+    @UploadedFile() profilePic?: Express.Multer.File,
+  ) {
+    return this.adminService.updateAdminupdate(id, body, profilePic);
+  }
+
+
+@Get('getProfileImage/:id')
+async getProfileImage(@Param('id', ParseIntPipe) id: number) {
+  const admin = await this.adminService.getAdminByIdForImage(id);
+
+  return {
+    profilePic: admin?.display_picture
+      ? `http://localhost:3000/${admin.display_picture}`
+      : '', // fallback to empty string if no image
+  };
+}
+
+//   @Delete('/deleteAdmin/:username')
+// async deleteAdminByUsername(
+//   @Param('username') username: string
+// ): Promise<{ message: string }> {
+//   const deleted = await this.adminService.deleteAdminByUsername(username);
+//   if (!deleted) {
+//     return { message: `No admin found with username "${username}"` };
+//   }
+//   return { message: `Admin with username "${username}" deleted successfully` };
+// }
 
   // @Post('/addTeacher/:adminid')
   // @UsePipes(new ValidationPipe)

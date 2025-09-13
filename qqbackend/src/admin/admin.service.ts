@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, InternalServerErrorException } from "@nestjs/common";
+import { BadRequestException, HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { AdminController } from "./admin.controller";
 import { adminData } from "./admin.dto";
 import { AdminEntity } from "./admin.entity";
@@ -10,6 +10,15 @@ import * as bcrypt from 'bcrypt';
 import { StudentDto } from "src/student/dtos/student.dto";
 import { MailerService } from "@nestjs-modules/mailer";
 import { TeacherDto } from "src/teacher/dtos/teacher.dto";
+import * as Pusher from 'pusher';
+ 
+const pusher = new Pusher({
+  appId: "2050313",
+  key: "06502ea51c15be4dd2e3",
+  secret: "f1a8a4223993d0331e5f",
+  cluster: "ap2",
+  useTLS: true,
+});
 
 @Injectable()
 export class AdminService {
@@ -104,15 +113,21 @@ async addAdminDto(adminData: adminData): Promise<object> {
     }
 
     // Save admin
-    const admin = await this.adminRepository.save(adminData);
-
-    await this.mailerService.sendMail({
-      to: 'playinggamesforent@gmail.com',
-      subject: 'Admin added',
-      text: 'An admin has been added successfully.',
+const admin = await this.adminRepository.save(adminData);
+// ✅ Trigger Pusher event
+console.log("Triggering Pusher event for admin:", admin.id);
+    await pusher.trigger("admin-channel", "admin-created", {
+      message: `A new admin was added by ${admin.id}`,
+      adminId: admin.id,
     });
-
-    return admin;
+ 
+await this.mailerService.sendMail({
+  to: 'playinggamesforent@gmail.com',
+  subject: 'Admin added',
+  text: 'An admin has been added successfully.',
+});
+ 
+return admin;
 
   } catch (error) {
     console.error('Error saving admin:', error);
@@ -170,15 +185,63 @@ async checkUsernameExists(username: string): Promise<boolean> {
     })
   }
 
-  async updateAdmin(id: number, name: AdminEntity): Promise<AdminEntity | null> {
-    await this.adminRepository.update(id, name);
-    return this.adminRepository.findOneBy({ id: id });
-    console.log('Update complete');
+    // Fetch single admin for update
+  async getAdminByIdupdate(id: number): Promise<AdminEntity> {
+    const admin = await this.adminRepository.findOne({ where: { id } });
+    if (!admin) {
+      throw new NotFoundException('Admin not found');
+    }
+    return admin;
   }
 
-  async deleteAdmin(id: number): Promise<void> {
-    await this.adminRepository.delete(id);
+  // Update admin
+  async updateAdminupdate(
+    id: number,
+    body: any,
+    profilePic?: Express.Multer.File,
+  ): Promise<AdminEntity> {
+    const admin = await this.getAdminByIdupdate(id);
+
+    // Update fields
+    admin.username = body.username ?? admin.username;
+    admin.fullname = body.fullname ?? admin.fullname;
+    admin.email = body.email ?? admin.email;
+    admin.phone_number = body.phone_number ?? admin.phone_number;
+    admin.date_of_birth = body.date_of_birth ?? admin.date_of_birth;
+    admin.gender = body.gender ?? admin.gender;
+    admin.address = body.address ?? admin.address;
+
+    // Update password if provided
+    if (body.password) {
+      const salt = await bcrypt.genSalt();
+      admin.password = await bcrypt.hash(body.password, salt);
+    }
+
+    // Update profile picture if uploaded
+    if (profilePic) {
+      admin.display_picture = profilePic.filename; // Or path depending on Multer setup
+    }
+
+    return this.adminRepository.save(admin);
   }
+
+
+  async getAdminByIdForImage(id: number): Promise<AdminEntity | null> {
+  const admin = await this.adminRepository.findOne({ where: { id } });
+  return admin || null;
+}
+
+
+
+  // async updateAdmin(id: number, name: AdminEntity): Promise<AdminEntity | null> {
+  //   await this.adminRepository.update(id, name);
+  //   return this.adminRepository.findOneBy({ id: id });
+  //   console.log('Update complete');
+  // }
+
+  // async deleteAdmin(id: number): Promise<void> {
+  //   await this.adminRepository.delete(id);
+  // }
 
   // async createTeacher(adminid: number, teacherData: TeacherDto): Promise<TeacherEntity> {
   //   const admin = await this.adminRepository.findOneBy({ id: adminid });
@@ -310,5 +373,95 @@ async addStudent(createStudentDto: StudentDto): Promise<StudentEntity> {
     const student = this.studentRepository.create(dto);
     return this.studentRepository.save(student);
   }
+  async deleteAdmin(id: number): Promise<boolean> {  // <- explicitly boolean
+  const admin = await this.adminRepository.findOne({ where: { id } });
+  if (!admin) {
+    return false; // Admin not found
+  }
+  await this.adminRepository.remove(admin);
+  return true; // Admin deleted successfully
+}
+async deleteAdminByUsername(username: string): Promise<boolean> {
+  const admin = await this.adminRepository.findOne({ where: { username } });
+  if (!admin) {
+    return false; // Admin not found
+  }
+  await this.adminRepository.remove(admin);
+  return true;
+}
+
+async deleteTeacherById(id: number): Promise<boolean> {
+    const teacher = await this.teacherRepository.findOne({ where: { id } });
+    if (!teacher) {
+      return false; // Teacher not found
+    }
+    await this.teacherRepository.remove(teacher);
+    return true; // Teacher deleted successfully
+  }
+
+
+  async deleteStudentByUsername(username: string): Promise<boolean> {
+    const student = await this.studentRepository.findOne({ where: { username } });
+    if (!student) {
+      return false; // Student not found
+    }
+    await this.studentRepository.remove(student);
+    return true; // Student deleted successfully
+  }
+
+
+  async findByUsername(username: string): Promise<StudentEntity> {
+    const student = await this.studentRepository.findOne({
+      where: { username },
+      relations: ['program'], // if enrolledProgram is a relation
+    });
+    if (!student) throw new NotFoundException('Student not found');
+    return student;
+  }
+
+  async getAllStudentsbyName(): Promise<StudentEntity[]> {
+    return this.studentRepository.find(); // fetch all students
+  }
+  async updateStudentByUsername(username: string, updateData: any) {
+  const student = await this.studentRepository.findOne({ where: { username } });
+  if (!student) throw new Error("Student not found");
+
+  // Only hash password if a new one is provided
+  if (updateData.password) {
+    const salt = await bcrypt.genSalt(10);
+    updateData.password = await bcrypt.hash(updateData.password, salt);
+  }
+
+  // Update other fields
+  Object.assign(student, updateData);
+  return this.studentRepository.save(student);
+}
+async getAllTeachersforupdate() {
+    return this.teacherRepository.find({
+      select: ['id', 'username', 'fullname'],
+    });
+  }
+  
+async getTeacherById(id: number): Promise<TeacherEntity | null> {
+  return this.teacherRepository.findOne({ where: { id } });
+}
+async updateTeacher(id: number, updateTeacherDto: any) {
+  const teacher = await this.teacherRepository.findOne({ where: { id } });
+
+  if (!teacher) {
+    throw new NotFoundException(`Teacher with ID ${id} not found`);
+  }
+
+  // merge old data with new
+  Object.assign(teacher, updateTeacherDto);
+
+  return this.teacherRepository.save(teacher);
+}
+ async getAllAdminsforup() {
+    return await this.adminRepository.find();
+  }
+  
+
+  
 
 }

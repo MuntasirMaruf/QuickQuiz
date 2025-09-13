@@ -8,10 +8,10 @@ async function bootstrap() {
   app.use(
     session({
       secret: 'my-secret',
-      resave: false,
-      saveUninitialized: false,
+      resave: true,
+      saveUninitialized: true,
       cookie: {
-        maxAge: 5 * 60 * 1000, // 3 minutes
+        maxAge: 0.05 * 60 * 1000, // 3 minutes
       },
     }),
   );
