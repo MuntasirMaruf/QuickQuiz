@@ -200,6 +200,7 @@ async loginSession(
   deleteAdmin(@Param('id', ParseIntPipe) id: number): object {
     return this.adminService.deleteAdmin(id);
   }
+  
 
   @Post('/addTeacher/:adminid')
   @UsePipes(new ValidationPipe)
