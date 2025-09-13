@@ -10,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { StudentDto } from "src/student/dtos/student.dto";
 import { MailerService } from "@nestjs-modules/mailer";
 import { TeacherDto } from "src/teacher/dtos/teacher.dto";
+
 @Injectable()
 export class AdminService {
   constructor(@InjectRepository(AdminEntity) private adminRepository: Repository<AdminEntity>,
@@ -179,18 +180,18 @@ async checkUsernameExists(username: string): Promise<boolean> {
     await this.adminRepository.delete(id);
   }
 
-  async createTeacher(adminid: number, teacherData: TeacherDto): Promise<TeacherEntity> {
-    const admin = await this.adminRepository.findOneBy({ id: adminid });
-    if (!admin) throw new Error('Admin not found');
+  // async createTeacher(adminid: number, teacherData: TeacherDto): Promise<TeacherEntity> {
+  //   const admin = await this.adminRepository.findOneBy({ id: adminid });
+  //   if (!admin) throw new Error('Admin not found');
 
-    // Create a TeacherEntity from the DTO
-    const teacher = this.teacherRepository.create({
-      ...teacherData, // spread DTO properties
-      admin,          // assign the admin relation
-    });
+  //   // Create a TeacherEntity from the DTO
+  //   const teacher = this.teacherRepository.create({
+  //     ...teacherData, // spread DTO properties
+  //     admin,          // assign the admin relation
+  //   });
 
-    return this.teacherRepository.save(teacher);
-  }
+  //   return this.teacherRepository.save(teacher);
+  // }
   getAllAdminWitTeacher(): Promise<AdminEntity[]> {
     return this.adminRepository.find({ relations: ['teachers'] });
   }
@@ -234,6 +235,21 @@ async checkUsernameExists(username: string): Promise<boolean> {
     return this.studentRepository.find(); // returns all students
   }
 
+  async createTeacher(teacherData: TeacherDto): Promise<TeacherEntity> {
+  try {
+    // Create a new TeacherEntity from the DTO
+    const teacher = this.teacherRepository.create(teacherData);
+
+    // Save to DB
+    return await this.teacherRepository.save(teacher);
+  } catch (error) {
+    console.error("Error creating teacher:", error);
+    throw new InternalServerErrorException("Failed to create teacher.");
+  }
+}
+ async getAllTeachers(): Promise<TeacherEntity[]> {
+    return this.teacherRepository.find(); // returns all teachers
+  }
   // async getStudentsWithCgpaRange(min: number, max: number): Promise<StudentEntity[]> {
   //   return this.studentRepository.find({
   //     where: {

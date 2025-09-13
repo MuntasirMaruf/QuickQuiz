@@ -200,29 +200,33 @@ async loginSession(
   deleteAdmin(@Param('id', ParseIntPipe) id: number): object {
     return this.adminService.deleteAdmin(id);
   }
-  
-
-  @Post('/addTeacher/:adminid')
-  @UsePipes(new ValidationPipe)
-  @UseGuards(SessionGuard)
-  addATeacher(
-    @Param('adminid', ParseIntPipe) adminid: number,
-    @Body() TeacherData: TeacherDto,
-    @Session() session
-  ): object {
-    const loggedInAdminId = session.ID;
-
-    // Check if the admin is trying to use another ID
-    if (adminid !== loggedInAdminId) {
-      throw new HttpException(
-        'You cannot add a teacher for another admin!',
-        HttpStatus.FORBIDDEN,
-      );
-    }
-
-    console.log(`Admin ${loggedInAdminId} is adding a teacher`);
-    return this.adminService.createTeacher(loggedInAdminId, TeacherData);
+  @Post('/addTeacher')
+  @UsePipes(new ValidationPipe())
+  addTeacher(@Body() teacherData: TeacherDto): object {
+    return this.adminService.createTeacher(teacherData);
   }
+
+  // @Post('/addTeacher/:adminid')
+  // @UsePipes(new ValidationPipe)
+  // @UseGuards(SessionGuard)
+  // addATeacher(
+  //   @Param('adminid', ParseIntPipe) adminid: number,
+  //   @Body() TeacherData: TeacherDto,
+  //   @Session() session
+  // ): object {
+  //   const loggedInAdminId = session.ID;
+
+  //   // Check if the admin is trying to use another ID
+  //   if (adminid !== loggedInAdminId) {
+  //     throw new HttpException(
+  //       'You cannot add a teacher for another admin!',
+  //       HttpStatus.FORBIDDEN,
+  //     );
+  //   }
+
+  //   console.log(`Admin ${loggedInAdminId} is adding a teacher`);
+  //   return this.adminService.createTeacher(loggedInAdminId, TeacherData);
+  // }
   @Get('/allAdminWithTeacher')
   getAllAdminTeacher(): Promise<AdminEntity[]> {
     return this.adminService.getAllAdminWitTeacher();
@@ -230,6 +234,11 @@ async loginSession(
   @Post('/getTeacherByAdminId/:adminid')
   getTeacherByAdminId(@Param('adminid', ParseIntPipe) id: number): Promise<TeacherEntity[]> {
     return this.adminService.getTeacherByAdminId(id);
+  }
+
+  @Get('/getAllTeachers')
+  getAllTeachers(): Promise<TeacherEntity[]> {
+    return this.adminService.getAllTeachers();
   }
   @Get('/getAdminByTeacher/:teacherId')
   getAdminByTeacher(
