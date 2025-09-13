@@ -1,4 +1,4 @@
-import { NotFoundException, Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, Res, ParseIntPipe, Delete, Patch, Put, Query, UseGuards, Session } from '@nestjs/common';
+import { NotFoundException, Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, Res, ParseIntPipe, Delete, Patch, Put, Query, UseGuards, Session, BadRequestException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MulterError, diskStorage } from 'multer';
 import { StudentService } from './student.service';
@@ -95,7 +95,7 @@ export class StudentController {
     return this.studentService.getBySubstring(substring);
   }
 
-  // @UseGuards(AdminJwtGuard)
+  // @UseGuards(StudentSessionGuard)
   @Get("retrieve/:username")
   getByUsername(@Param('username') username: string) {
     return this.studentService.getByUsername(username);
@@ -112,6 +112,24 @@ export class StudentController {
   @UsePipes(new ValidationPipe({ transform: true }))
   update(@Param('id', ParseIntPipe) id: number, @Body() studentDto: StudentDto): object {
     return this.studentService.update(id, studentDto);
+  }
+
+  @Patch("reset_password/:username")
+  async resetPassword(
+    @Param("username") username: string,
+    @Body("password") password: string
+  ) {
+    if (!password || password.trim() === "") {
+      throw new BadRequestException("Password is required.");
+    }
+
+    const updated = await this.studentService.resetPassword(username, password);
+
+    if (!updated) {
+      throw new NotFoundException("User not found.");
+    }
+
+    return { success: true, message: "Password reset successful." };
   }
 
   @UseGuards(StudentSessionGuard)

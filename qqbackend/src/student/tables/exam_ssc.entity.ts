@@ -8,6 +8,9 @@ export class ExamSSCEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
+    @Column({ type: 'varchar', length: 200 })
+    name: string;
+
     @Column({ type: 'varchar', length: 100 })
     category: string;
 
@@ -22,6 +25,9 @@ export class ExamSSCEntity {
 
     @Column()
     date: Date;
+
+    @Column({ type: 'varchar', length: 100 })
+    time: string;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     created_at: Date;

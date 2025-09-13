@@ -115,6 +115,21 @@ export class StudentService {
     throw new NotFoundException("Student not found.");
   }
 
+  async resetPassword(username: string, password: string): Promise<boolean> {
+    const student = await this.studentRepository.findOne({
+      where: { username },
+    });
+
+    if (!student) return false;
+
+    // hash password before saving
+    const hashedPassword = await bcrypt.hash(password, 10);
+    student.password = hashedPassword;
+
+    await this.studentRepository.save(student);
+    return true;
+  }
+
   async delete(id: number): Promise<string | void> {
     //await this.studentRepository.delete(id);
     const status = await this.statusRepository.findOneBy({ id: 3 }); // Assuming id 3 is 'Deleted'

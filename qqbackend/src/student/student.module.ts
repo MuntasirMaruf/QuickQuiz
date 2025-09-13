@@ -22,29 +22,29 @@ import { jwtConstants } from "./auths/jwt_constraints";
 import { AdminService } from "./dummy_admin.service";
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([StudentEntity, StatusEntity, ProgramEntity, QuestionCqSSCEntity, ExamSSCEntity, ExamQuestionSSCEntity]),
-        MailerModule.forRoot({
-            transport: {
-              host: 'smtp.gmail.com',
-              port: 587,
-              secure: false,
-              auth: {
-                user: 'maruf.testai@gmail.com',
-                pass: 'vyvf rurx jobl ipct',
-              },
-            },
-            defaults: {
-              from: '"QuickQuiz" <quickquiz@gmail.com>',
+  imports: [
+    TypeOrmModule.forFeature([StudentEntity, StatusEntity, ProgramEntity, QuestionCqSSCEntity, ExamSSCEntity, ExamQuestionSSCEntity]),
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+          user: 'maruf.testai@gmail.com',
+          pass: 'vyvf rurx jobl ipct',
         },
-        }),
-        JwtModule.register({
-          global: true,
-          secret: jwtConstants.secret,
-          signOptions: { expiresIn: '180s' },
-        }),
-    ],
-    controllers: [StudentController, StatusController, ProgramController, AuthController, SSCQuestionCQController],
-    providers: [StudentService, StatusService, ProgramService, AuthService, SSCQuestionCQService, AdminService],
+      },
+      defaults: {
+        from: '"QuickQuiz" <quickquiz@gmail.com>',
+      },
+    }),
+    JwtModule.register({
+      global: true,
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '180s' },
+    }),
+  ],
+  controllers: [StudentController, StatusController, ProgramController, AuthController, SSCQuestionCQController],
+  providers: [StudentService, StatusService, ProgramService, AuthService, SSCQuestionCQService, AdminService],
 })
-export class StudentModule {}
+export class StudentModule { }
