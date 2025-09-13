@@ -20,9 +20,9 @@ export class AdminService {
   getAdmin(): string {
     return 'admin service is running!';
   }
-  getAdminById(admin: number): string {
-    return "admin id is " + admin;
-  }
+  // getAdminById(admin: number): string {
+  //   return "admin id is " + admin;
+  // }
   //   getAbdullahByNameAndId(name,id){
   //     return 'Name:' + name + ', id:' + id;
   // }
@@ -138,37 +138,26 @@ async checkUsernameExists(username: string): Promise<boolean> {
   }
 
 
-  async loginSession(id, pass): Promise<AdminEntity | null> {
-    const check = await this.adminRepository.findOneBy({ id: id });
-    if (!check) {
-      // throw new Error('Admin Not Found! Please Check With Valid Id');
-      throw new HttpException(
-        {
-          statusCode: 4000,
-          message: 'Admin Not Found! Please Check With Valid Id ',
-        },
-        HttpStatus.FORBIDDEN,
-      );
-    }
-    else {
-      const isMatch = await bcrypt.compare(pass, check.password);
-      if (!isMatch) {
-        throw new HttpException(
-          {
-            statusCode: 4001,
-            message: 'Maybe password is incorrect ',
-          },
-          HttpStatus.FORBIDDEN,
-        );
-        console.log('Wrong Password');
-
-      }
-      else {
-
-        return check;
-      }
-    }
+  async loginSession(id: number, pass: string): Promise<AdminEntity> {
+  const admin = await this.adminRepository.findOneBy({ id });
+  if (!admin) {
+    throw new HttpException(
+      { statusCode: 4000, message: 'Admin Not Found!' },
+      HttpStatus.FORBIDDEN
+    );
   }
+
+  const isMatch = await bcrypt.compare(pass, admin.password);
+  if (!isMatch) {
+    throw new HttpException(
+      { statusCode: 4001, message: 'Incorrect password!' },
+      HttpStatus.FORBIDDEN
+    );
+  }
+
+  return admin;
+}
+
 
 
   async getAllAdmin(): Promise<AdminEntity[]> {
@@ -280,5 +269,30 @@ async checkUsernameExists(username: string): Promise<boolean> {
   //     const savedAdmin = await this.adminRepository.save(adminToSave);
   //     return savedAdmin;
   // }
+
+  async getAdminById(id: number): Promise<AdminEntity | null> {
+  return this.adminRepository.findOneBy({ id });
+}
+
+async getAdminWithPhotoUrl(admin: AdminEntity | null): Promise<object | null> {
+  if (!admin) return null;
+
+  return {
+    id: admin.id,
+    name: admin.fullname,
+    email: admin.email,
+    username: admin.username,
+    profilePic: admin.display_picture
+      ? `http://localhost:3000/admin/getimage/${admin.display_picture}`
+      : null, // fallback if no picture
+  };
+}
+async addStudent(createStudentDto: StudentDto): Promise<StudentEntity> {
+    // Convert date_of_birth string to Date object
+    const dto = { ...createStudentDto, date_of_birth: new Date(createStudentDto.date_of_birth) };
+
+    const student = this.studentRepository.create(dto);
+    return this.studentRepository.save(student);
+  }
 
 }

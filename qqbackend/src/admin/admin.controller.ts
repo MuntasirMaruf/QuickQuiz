@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Query, Body, UseInterceptors, UploadedFile, UsePipes, ValidationPipe, ParseIntPipe, Put, Delete, UseGuards, Session, HttpException, HttpStatus, Patch } from "@nestjs/common";
+import { Controller, Get, Post, Param, Query, Body, UseInterceptors, UploadedFile, UsePipes, ValidationPipe, ParseIntPipe, Put, Delete, UseGuards, Session, HttpException, HttpStatus, Patch, Res } from "@nestjs/common";
 import { AdminService } from "./admin.service";
 import { adminData, adminLoginDto } from "./admin.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -19,10 +19,10 @@ export class AdminController {
   getAdmin(): string {
     return this.adminService.getAdmin();
   }
-  @Get('id')
-  getAdminById(@Param('id') admin: number) {
-    return this.adminService.getAdminById(admin);
-  }
+  // @Get('id')
+  // getAdminById(@Param('id') admin: number) {
+  //   return this.adminService.getAdminById(admin);
+  // }
   //    @Get("/find")
   //  getAbdullahByNameAndId(@Query('name')name:string,@Query('id')id:number):string{
   //    return this.adminService.getAbdullahByNameAndId(name,id);
@@ -90,17 +90,53 @@ export class AdminController {
   // getUnknownCountry(){
   //   return this.adminService.getTeacherUnknownCountry();
   // }
+  // @Post('/addAdminnew')
+  // @UsePipes(new ValidationPipe)
+  // @UseInterceptors(FileInterceptor('profilePic'))
+  // async UploadFile(@UploadedFile() file: Express.Multer.File, @Body() adminData: adminData): Promise<object> {
+  //   console.log(file);
+  //   adminData.display_picture = file.originalname;
+  //   const salt = await bcrypt.genSalt();
+  //   adminData.password = await bcrypt.hash(adminData.password, salt);
+
+  //   return this.adminService.addAdminDto(adminData);
+  // }
+
   @Post('/addAdminnew')
-  @UsePipes(new ValidationPipe)
-  @UseInterceptors(FileInterceptor('profilePic'))
-  async UploadFile(@UploadedFile() file: Express.Multer.File, @Body() adminData: adminData): Promise<object> {
-    console.log(file);
-    adminData.display_picture = file.originalname;
+  @UsePipes(new ValidationPipe())
+  @UseInterceptors(
+    FileInterceptor('profilePic', {
+      fileFilter: (req, file, cb) => {
+        // Accept only jpg, jpeg, png
+        if (file.originalname.match(/^.*\.(jpg|jpeg|png)$/)) {
+          cb(null, true);
+        } else {
+          cb(new MulterError('LIMIT_UNEXPECTED_FILE', 'profilePic'), false);
+        }
+      },
+      limits: { fileSize: 1024 * 1024 * 2 }, // 2 MB limit
+      storage: diskStorage({
+        destination: './Uploads', // save files here
+        filename: (req, file, cb) => {
+          cb(null, Date.now() + file.originalname); // ✅ your style
+        },
+      }),
+    }),
+  )
+  async UploadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() adminData: adminData,
+  ): Promise<object> {
+    if (file) {
+      adminData.display_picture = file.filename; // store actual saved filename
+    }
+
     const salt = await bcrypt.genSalt();
     adminData.password = await bcrypt.hash(adminData.password, salt);
 
     return this.adminService.addAdminDto(adminData);
   }
+
   
   //   @Post('/loginAdmin')
   // async loginSession(@Body(){ id, pass }: adminData, @Session() session){
@@ -134,20 +170,24 @@ async checkPhone(@Body() body: { phone_number: string }) {
 
 
   @Post('/loginAdmin')
-  async loginSession(@Body() body: adminLoginDto, @Session() session) {
-    const { id, pass } = body;
-    const admin = await this.adminService.loginSession(id, pass);
-    if (!admin) {
-      return { message: 'User not found' };
-    }
-    else {
-      session.ID = admin.id;
-      //session.pass=check.pass;
-      console.log('Session Created');
-    }
-  }
+async loginSession(
+  @Body() body: adminLoginDto,
+  @Session() session
+) {
+  const { id, pass } = body;
 
-  @Post('/getAdmin')
+  // loginSession either returns AdminEntity or throws HttpException
+  const admin = await this.adminService.loginSession(id, pass);
+
+  // Save admin ID in session
+  session.ID = admin.id;
+  console.log('Session Created:', session.ID);
+
+  // Return admin info to frontend (name, profile picture)
+  return await this.adminService.getAdminWithPhotoUrl(admin);
+}
+
+  @Get('/getAdmin')
   getAllAdmin(): object {
     return this.adminService.getAllAdmin();
   }
@@ -196,6 +236,14 @@ async checkPhone(@Body() body: { phone_number: string }) {
   ): Promise<AdminEntity | null> {
     return this.adminService.getAdminByTeacher(teacherId);
   }
+  @Post('addStudent')
+  async addStudent(@Body() createStudentDto: StudentDto) {
+    // Hash password before saving
+    const salt = await bcrypt.genSalt();
+    createStudentDto.password = await bcrypt.hash(createStudentDto.password, salt);
+
+    return this.adminService.addStudent(createStudentDto);
+  }
 
 
   @Post('/addStudent/:adminid')
@@ -222,7 +270,7 @@ async checkPhone(@Body() body: { phone_number: string }) {
   }
 
 
-  @Post('/getStudents')
+  @Get('/getStudents')
   getAllStudents(): Promise<StudentEntity[]> {
     return this.adminService.getAllStudents(); // or studentService.getAllStudents()
   }
@@ -234,5 +282,30 @@ async checkPhone(@Body() body: { phone_number: string }) {
   // ): Promise<StudentEntity[]> {
   //   return this.adminService.getStudentsWithCgpaRange(min, max);
   // }
+  @Get('/getimage/:name')
+getImage(@Param('name')name,@Res() res){
+  
+    res.sendFile(name,{root:'./Uploads'})
+}
+@Get('getAdminById/:id')
+async getAdminById(@Param('id') id: number) {
+  const admin = await this.adminService.getAdminById(Number(id));
+  return this.adminService.getAdminWithPhotoUrl(admin);
+}
+@Get('/check-session')
+checkSession(@Session() session) {
+  if (session.ID) {
+    return { loggedIn: true, id: session.ID };
+  } else {
+    return { loggedIn: false };
+  }
+}
+@Get('profile')
+@UseGuards(SessionGuard)
+async getProfile(@Session() session) {
+  const admin = await this.adminService.getAdminById(session.ID);
+  return this.adminService.getAdminWithPhotoUrl(admin);
+}
+
 
 }
