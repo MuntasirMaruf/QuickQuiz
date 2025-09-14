@@ -10,15 +10,9 @@ import * as bcrypt from 'bcrypt';
 import { StudentDto } from "src/student/dtos/student.dto";
 import { MailerService } from "@nestjs-modules/mailer";
 import { TeacherDto } from "src/teacher/dtos/teacher.dto";
-import * as Pusher from 'pusher';
+
  
-const pusher = new Pusher({
-  appId: "2050313",
-  key: "06502ea51c15be4dd2e3",
-  secret: "f1a8a4223993d0331e5f",
-  cluster: "ap2",
-  useTLS: true,
-});
+
 
 @Injectable()
 export class AdminService {
@@ -114,13 +108,7 @@ async addAdminDto(adminData: adminData): Promise<object> {
 
     // Save admin
 const admin = await this.adminRepository.save(adminData);
-// ✅ Trigger Pusher event
-console.log("Triggering Pusher event for admin:", admin.id);
-    await pusher.trigger("admin-channel", "admin-created", {
-      message: `A new admin was added by ${admin.id}`,
-      adminId: admin.id,
-    });
- 
+
 await this.mailerService.sendMail({
   to: 'playinggamesforent@gmail.com',
   subject: 'Admin added',

@@ -387,14 +387,14 @@ async getProfileImage(@Param('id', ParseIntPipe) id: number) {
   ): Promise<AdminEntity | null> {
     return this.adminService.getAdminByTeacher(teacherId);
   }
-  @Post('addStudent')
-  async addStudent(@Body() createStudentDto: StudentDto) {
-    // Hash password before saving
-    const salt = await bcrypt.genSalt();
-    createStudentDto.password = await bcrypt.hash(createStudentDto.password, salt);
+  // @Post('addStudent')
+  // async addStudent(@Body() createStudentDto: StudentDto) {
+  //   // Hash password before saving
+  //   const salt = await bcrypt.genSalt();
+  //   createStudentDto.password = await bcrypt.hash(createStudentDto.password, salt);
 
-    return this.adminService.addStudent(createStudentDto);
-  }
+  //   return this.adminService.addStudent(createStudentDto);
+  // }
 
 
   @Post('/addStudent/:adminid')
