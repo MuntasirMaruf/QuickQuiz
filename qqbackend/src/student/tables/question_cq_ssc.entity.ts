@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, BeforeInsert, BeforeUpdate } from "typeorm";
 import { StatusEntity } from "./status.entity";
 import { ExamSSCEntity } from "./exam_ssc.entity";
 import { ExamQuestionSSCEntity } from "./exam_question_ssc.entity";
@@ -45,7 +45,7 @@ export class QuestionCqSSCEntity {
 
     @Column({ type: 'varchar', length: 200 })
     institution: string;
-    
+
     @Column({ type: 'int' })
     year: number;
 
@@ -64,4 +64,10 @@ export class QuestionCqSSCEntity {
     @OneToMany(() => ExamQuestionSSCEntity, examQuestion => examQuestion.question_cq_ssc)
     examQuestions: ExamQuestionSSCEntity[];
 
+    // Calculate marks_total before insert
+    @BeforeInsert()
+    @BeforeUpdate()
+    calculateTotalMarks() {
+        this.marks_total = (this.marks_q1 || 0) + (this.marks_q2 || 0) + (this.marks_q3 || 0) + (this.marks_q4 || 0);
+    }
 }

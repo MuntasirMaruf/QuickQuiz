@@ -81,4 +81,12 @@ export class SSCQuestionCQService {
     async findAllExamQuestions(): Promise<ExamQuestionSSCEntity[]> {
         return await this.examQuestionRepository.find({ relations: ["exam_ssc", "question_cq_ssc"] });
     }
+
+    async findExamQuestionsByExam(examId: number): Promise<ExamQuestionSSCEntity[]> {
+        return await this.examQuestionRepository.find({
+            where: { exam_ssc: { id: examId } },
+            relations: ['exam_ssc', 'question_cq_ssc'],
+        });
+    }
+
 }

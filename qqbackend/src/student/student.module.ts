@@ -23,6 +23,8 @@ import { AdminService } from "./dummy_admin.service";
 import { AnswerSSCEntity } from "./tables/answer_ssc.entity";
 import { ExamSSCController } from "./exam.controller";
 import { ExamSSCService } from "./exam.service";
+import { NotificationController } from "./notification.controller";
+import { NotificationService } from "./notification.service";
 
 @Module({
   imports: [
@@ -47,7 +49,7 @@ import { ExamSSCService } from "./exam.service";
       signOptions: { expiresIn: '180s' },
     }),
   ],
-  controllers: [StudentController, StatusController, ProgramController, AuthController, SSCQuestionCQController, ExamSSCController],
-  providers: [StudentService, StatusService, ProgramService, AuthService, SSCQuestionCQService, AdminService, ExamSSCService],
+  controllers: [StudentController, StatusController, ProgramController, AuthController, SSCQuestionCQController, ExamSSCController, NotificationController],
+  providers: [StudentService, StatusService, ProgramService, AuthService, SSCQuestionCQService, AdminService, ExamSSCService, NotificationService],
 })
 export class StudentModule { }
