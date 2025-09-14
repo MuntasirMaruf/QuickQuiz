@@ -20,10 +20,13 @@ import { ExamQuestionSSCEntity } from "./tables/exam_question_ssc.entity";
 import { JwtModule } from "@nestjs/jwt";
 import { jwtConstants } from "./auths/jwt_constraints";
 import { AdminService } from "./dummy_admin.service";
+import { AnswerSSCEntity } from "./tables/answer_ssc.entity";
+import { ExamSSCController } from "./exam.controller";
+import { ExamSSCService } from "./exam.service";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([StudentEntity, StatusEntity, ProgramEntity, QuestionCqSSCEntity, ExamSSCEntity, ExamQuestionSSCEntity]),
+    TypeOrmModule.forFeature([StudentEntity, StatusEntity, ProgramEntity, QuestionCqSSCEntity, ExamSSCEntity, ExamQuestionSSCEntity, AnswerSSCEntity]),
     MailerModule.forRoot({
       transport: {
         host: 'smtp.gmail.com',
@@ -44,7 +47,7 @@ import { AdminService } from "./dummy_admin.service";
       signOptions: { expiresIn: '180s' },
     }),
   ],
-  controllers: [StudentController, StatusController, ProgramController, AuthController, SSCQuestionCQController],
-  providers: [StudentService, StatusService, ProgramService, AuthService, SSCQuestionCQService, AdminService],
+  controllers: [StudentController, StatusController, ProgramController, AuthController, SSCQuestionCQController, ExamSSCController],
+  providers: [StudentService, StatusService, ProgramService, AuthService, SSCQuestionCQService, AdminService, ExamSSCService],
 })
 export class StudentModule { }
