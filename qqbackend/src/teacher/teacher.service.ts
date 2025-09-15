@@ -87,6 +87,10 @@ export class TeacherService {
     return this.teacherRepository.findOne({ where: { id } });
   }
 
+  async getTeacherByUsername(id: string): Promise<TeacherEntity | null> {
+    return this.teacherRepository.findOne({ where: { username: id } });
+  }
+
   async updateTeacher(id: number, teacherDto: TeacherDto): Promise<TeacherEntity | null> {
     const teacher = await this.teacherRepository.findOne({ where: { id } });
     if (teacher) {

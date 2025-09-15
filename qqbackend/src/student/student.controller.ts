@@ -101,9 +101,10 @@ export class StudentController {
     return this.studentService.getByUsername(username);
   }
 
-  @UseGuards(AdminJwtGuard)
+  @UseGuards(StudentSessionGuard)
   @Delete('remove/:username')
-  deleteByUsername(@Param('username') username: string) {
+  deleteByUsername(@Param('username') username: string, @Session() session: Record<string, any>) {
+    session.destroy();
     return this.studentService.deleteByUsername(username);
   }
 

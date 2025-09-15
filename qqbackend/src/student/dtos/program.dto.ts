@@ -14,12 +14,11 @@ export class ProgramDto {
     @IsPositive()
     duration: number; // Duration in months
 
-    @Type(() => Date) 
+    @Type(() => Date)
     @IsDate()
     start_date: Date;
 
     @IsOptional()
-    @Matches(/^\d+$/, { message: 'Price must be a positive number' })
     price: number;
 
     @IsInt()

@@ -78,13 +78,13 @@ export class AuthController {
     @Session() session: Record<string, any>
   ) {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    session.otp = otp; // Store in session
+    session.otp = otp;
     session.email = body.email;
 
     await this.mailerService.sendMail({
       to: body.email,
-      subject: "Your OTP Code",
-      template: "./otp", // optional template (see below)
+      subject: "QuickQuiz",
+      template: "./otp",
       context: {
         otp,
       },

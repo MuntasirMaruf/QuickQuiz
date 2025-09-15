@@ -71,6 +71,11 @@ export class TeacherController {
   getTeacherById(@Param('id', ParseIntPipe) id: number) {
     return this.teacherService.getTeacherById(id);
   }
+
+  @Get('byusername/:id')
+  getTeacherByusername(@Param('id') id: string) {
+    return this.teacherService.getTeacherByUsername(id);
+  }
   // Route to update teacher info
   @Put('update/:id')
   @UsePipes(new ValidationPipe({ transform: true }))
