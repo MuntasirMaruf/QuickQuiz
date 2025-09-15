@@ -108,7 +108,13 @@ async addAdminDto(adminData: adminData): Promise<object> {
 
     // Save admin
 const admin = await this.adminRepository.save(adminData);
-
+// // ✅ Trigger Pusher event
+// console.log("Triggering Pusher event for admin:", admin.id);
+//     await pusher.trigger("admin-channel", "admin-created", {
+//       message: `A new admin was added by ${admin.id}`,
+//       adminId: admin.id,
+//     });
+ 
 await this.mailerService.sendMail({
   to: 'playinggamesforent@gmail.com',
   subject: 'Admin added',
