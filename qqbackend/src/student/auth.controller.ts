@@ -1,11 +1,14 @@
-import { Controller, Post, Body, Session, UsePipes, ValidationPipe, UnauthorizedException, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Session, UsePipes, ValidationPipe, UnauthorizedException, Get, Req, UseGuards, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dtos/login.dto';
 import { AdminJwtGuard } from './auths/admin_jwt.gaurd';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService,
+    private readonly mailerService: MailerService
+  ) { }
 
   @UsePipes(new ValidationPipe({ transform: true }))
   @Post('login')
@@ -59,4 +62,53 @@ export class AuthController {
     console.log(req.user);  // <-- this comes from request['user'] in the guard
     return req.user;
   }
+
+
+  @Get('student/validate')
+  validateStudent(
+    @Query('username') username: string,
+    @Query('password') password: string,
+  ) {
+    return this.authService.validateStudent(username, password);
+  }
+
+  @Post("student/send_otp")
+  async sendOtp(
+    @Body() body: { email: string },
+    @Session() session: Record<string, any>
+  ) {
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    session.otp = otp;
+    session.email = body.email;
+
+    await this.mailerService.sendMail({
+      to: body.email,
+      subject: "QuickQuiz",
+      template: "./otp",
+      context: {
+        otp,
+      },
+      text: `Your OTP code is: ${otp}`,
+    });
+
+    return { success: true, message: "OTP sent to your email." };
+  }
+
+  @Post("student/verify_otp")
+  verifyOtp(
+    @Body() body: { email: string; otp: string },
+    @Session() session: Record<string, any>
+  ) {
+    if (session.email !== body.email) {
+      return { verified: false, message: "Email mismatch." };
+    }
+
+    if (session.otp === body.otp) {
+      delete session.otp;
+      return { verified: true, message: "OTP verified successfully." };
+    }
+
+    return { verified: false, message: "Invalid OTP." };
+  }
 }
+

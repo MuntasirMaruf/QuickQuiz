@@ -3,6 +3,10 @@ import { Type } from "class-transformer";
 import { ExamCategory } from "../exam_category.enum";
 
 export class ExamSSCDto {
+
+  @IsNotEmpty()
+  name: string;
+
   @IsEnum(ExamCategory, { message: "Category must be Regular, ModelTest, or FinalPreparation" })
   category: ExamCategory;
 
@@ -21,4 +25,7 @@ export class ExamSSCDto {
   @Type(() => Date)
   @IsDate()
   date: Date;
+
+  @IsNotEmpty()
+  time: string;
 }

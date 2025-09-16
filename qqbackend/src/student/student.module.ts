@@ -20,31 +20,36 @@ import { ExamQuestionSSCEntity } from "./tables/exam_question_ssc.entity";
 import { JwtModule } from "@nestjs/jwt";
 import { jwtConstants } from "./auths/jwt_constraints";
 import { AdminService } from "./dummy_admin.service";
+import { AnswerSSCEntity } from "./tables/answer_ssc.entity";
+import { ExamSSCController } from "./exam.controller";
+import { ExamSSCService } from "./exam.service";
+import { NotificationController } from "./notification.controller";
+import { NotificationService } from "./notification.service";
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([StudentEntity, StatusEntity, ProgramEntity, QuestionCqSSCEntity, ExamSSCEntity, ExamQuestionSSCEntity]),
-        MailerModule.forRoot({
-            transport: {
-              host: 'smtp.gmail.com',
-              port: 587,
-              secure: false,
-              auth: {
-                user: 'maruf.testai@gmail.com',
-                pass: 'vyvf rurx jobl ipct',
-              },
-            },
-            defaults: {
-              from: '"QuickQuiz" <quickquiz@gmail.com>',
+  imports: [
+    TypeOrmModule.forFeature([StudentEntity, StatusEntity, ProgramEntity, QuestionCqSSCEntity, ExamSSCEntity, ExamQuestionSSCEntity, AnswerSSCEntity]),
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+          user: 'maruf.testai@gmail.com',
+          pass: 'vyvf rurx jobl ipct',
         },
-        }),
-        JwtModule.register({
-          global: true,
-          secret: jwtConstants.secret,
-          signOptions: { expiresIn: '180s' },
-        }),
-    ],
-    controllers: [StudentController, StatusController, ProgramController, AuthController, SSCQuestionCQController],
-    providers: [StudentService, StatusService, ProgramService, AuthService, SSCQuestionCQService, AdminService],
+      },
+      defaults: {
+        from: '"QuickQuiz" <quickquiz@gmail.com>',
+      },
+    }),
+    JwtModule.register({
+      global: true,
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '180s' },
+    }),
+  ],
+  controllers: [StudentController, StatusController, ProgramController, AuthController, SSCQuestionCQController, ExamSSCController, NotificationController],
+  providers: [StudentService, StatusService, ProgramService, AuthService, SSCQuestionCQService, AdminService, ExamSSCService, NotificationService],
 })
-export class StudentModule {}
+export class StudentModule { }

@@ -1,10 +1,14 @@
-import { Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, Res, ParseIntPipe, Delete, Patch, Put, Query, UseGuards, Session } from '@nestjs/common';
+import { NotFoundException, Controller, Get, Post, Body, Param, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, Res, ParseIntPipe, Delete, Patch, Put, Query, UseGuards, Session, BadRequestException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MulterError, diskStorage } from 'multer';
 import { StudentService } from './student.service';
 import { StudentDto } from './dtos/student.dto';
 import { StudentSessionGuard } from './auths/student_session.gaurd';
 import { AdminJwtGuard } from './auths/admin_jwt.gaurd';
+
+import { Response } from 'express';
+import * as path from 'path';
+import * as fs from 'fs';
 @Controller('student')
 export class StudentController {
   constructor(private readonly studentService: StudentService) { }
@@ -91,26 +95,45 @@ export class StudentController {
     return this.studentService.getBySubstring(substring);
   }
 
-  // @UseGuards(AdminJwtGuard)
+  // @UseGuards(StudentSessionGuard)
   @Get("retrieve/:username")
   getByUsername(@Param('username') username: string) {
     return this.studentService.getByUsername(username);
   }
 
-  @UseGuards(AdminJwtGuard)
+  @UseGuards(StudentSessionGuard)
   @Delete('remove/:username')
-  deleteByUsername(@Param('username') username: string) {
+  deleteByUsername(@Param('username') username: string, @Session() session: Record<string, any>) {
+    session.destroy();
     return this.studentService.deleteByUsername(username);
   }
 
-  @UseGuards(AdminJwtGuard)
+  @UseGuards(StudentSessionGuard)
   @Put('update/:id')
   @UsePipes(new ValidationPipe({ transform: true }))
   update(@Param('id', ParseIntPipe) id: number, @Body() studentDto: StudentDto): object {
     return this.studentService.update(id, studentDto);
   }
 
-  @UseGuards(AdminJwtGuard)
+  @Patch("reset_password/:username")
+  async resetPassword(
+    @Param("username") username: string,
+    @Body("password") password: string
+  ) {
+    if (!password || password.trim() === "") {
+      throw new BadRequestException("Password is required.");
+    }
+
+    const updated = await this.studentService.resetPassword(username, password);
+
+    if (!updated) {
+      throw new NotFoundException("User not found.");
+    }
+
+    return { success: true, message: "Password reset successful." };
+  }
+
+  @UseGuards(StudentSessionGuard)
   @Patch('update_dp/:id')
   @UseInterceptors(FileInterceptor('display_picture',
     {
@@ -146,4 +169,27 @@ export class StudentController {
   getImage(@Param('name') name, @Res() res) {
     res.sendFile(name, { root: './src/student/uploads' });
   }
+
+
+  @Get('profile/get_dp/:id')
+  async getDisplayPictureById(
+    @Param('id', ParseIntPipe) id: number,
+    @Res() res: Response,
+  ) {
+    const name = await this.studentService.getDp(id); // string | null
+
+    if (!name) {
+      throw new NotFoundException('Profile picture not found');
+    }
+
+    const uploadDir = path.join(process.cwd(), 'src', 'student', 'uploads');
+    const filePath = path.join(uploadDir, name);
+
+    if (!fs.existsSync(filePath)) {
+      throw new NotFoundException('Profile picture not found');
+    }
+
+    return res.sendFile(name, { root: uploadDir });
+  }
 }
+

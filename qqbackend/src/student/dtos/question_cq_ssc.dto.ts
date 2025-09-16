@@ -10,7 +10,7 @@ export class QuestionCqSSCDto {
     @IsString()
     @MaxLength(100, { message: 'Chapter must not exceed 100 characters.' })
     chapter: string;
-    
+
     @IsString()
     @MaxLength(500, { message: 'Senario must not exceed 500 characters.' })
     senario: string;
@@ -38,9 +38,6 @@ export class QuestionCqSSCDto {
     question_4: string;
     @IsInt()
     marks_q4: number;
-
-    @IsInt()
-    marks_total: number;
 
     @IsString()
     @MaxLength(200, { message: 'Answer must not exceed 200 characters.' })

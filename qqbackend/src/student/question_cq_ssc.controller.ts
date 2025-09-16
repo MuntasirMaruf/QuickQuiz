@@ -51,4 +51,9 @@ export class SSCQuestionCQController {
         return this.sscQuestionCQService.findAllExamQuestions();
     }
 
+    @Get('/exam_questions/:examid')
+    async getExamQuestions(@Param('examid') examid: number) {
+        return await this.sscQuestionCQService.findExamQuestionsByExam(examid);
+    }
+
 }

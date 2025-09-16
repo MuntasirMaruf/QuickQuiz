@@ -57,7 +57,7 @@ export class StudentService {
 
     const registered_student = await this.studentRepository.save(student);
     this.sendWelcomeEmail(registered_student.email, registered_student.fullname, registered_student.id.toString());
-    return student;
+    return "Student registered successfully.";
   }
 
   async viewPersonalInfo(id: number): Promise<StudentEntity | null> {
@@ -113,6 +113,21 @@ export class StudentService {
       return this.studentRepository.save(student);
     }
     throw new NotFoundException("Student not found.");
+  }
+
+  async resetPassword(username: string, password: string): Promise<boolean> {
+    const student = await this.studentRepository.findOne({
+      where: { username },
+    });
+
+    if (!student) return false;
+
+    // hash password before saving
+    const hashedPassword = await bcrypt.hash(password, 10);
+    student.password = hashedPassword;
+
+    await this.studentRepository.save(student);
+    return true;
   }
 
   async delete(id: number): Promise<string | void> {
@@ -193,7 +208,7 @@ export class StudentService {
   }
 
   async getByUsername(username: string): Promise<StudentEntity | null> {
-    const student = await this.studentRepository.findOne({ where: { username: username, status: { id: 1 } } });
+    const student = await this.studentRepository.findOne({ relations: ['program'], where: { username: username, status: { id: 1 } } });
     if (student) {
       return student;
     }
