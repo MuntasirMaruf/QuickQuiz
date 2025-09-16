@@ -11,8 +11,7 @@ import { SessionGuard } from "./admin.session.guard";
 import { StudentDto } from "src/student/dtos/student.dto";
 import { plainToInstance } from "class-transformer";
 import { TeacherDto } from "src/teacher/dtos/teacher.dto";
-import * as Pusher from 'pusher';
- 
+
 
 @Controller('admin')
 export class AdminController {
@@ -139,7 +138,7 @@ export class AdminController {
     return this.adminService.addAdminDto(adminData);
   }
 
-  
+
   //   @Post('/loginAdmin')
   // async loginSession(@Body(){ id, pass }: adminData, @Session() session){
 
@@ -155,39 +154,39 @@ export class AdminController {
   //  }
   // }
   @Post('/check-username')
-async checkUsername(@Body() body: { username: string }) {
-  const exists = await this.adminService.checkUsernameExists(body.username);
-  return { exists }; // { exists: true/false }
-}
-@Post('/check-email')
-async checkEmail(@Body() body: { email: string }) {
-  const exists = await this.adminService.checkEmailExists(body.email);
-  return { exists }; // { exists: true/false }
-}
-@Post('/check-phone')
-async checkPhone(@Body() body: { phone_number: string }) {
-  const exists = await this.adminService.checkPhoneExists(body.phone_number);
-  return { exists }; // { exists: true/false }
-}
+  async checkUsername(@Body() body: { username: string }) {
+    const exists = await this.adminService.checkUsernameExists(body.username);
+    return { exists }; // { exists: true/false }
+  }
+  @Post('/check-email')
+  async checkEmail(@Body() body: { email: string }) {
+    const exists = await this.adminService.checkEmailExists(body.email);
+    return { exists }; // { exists: true/false }
+  }
+  @Post('/check-phone')
+  async checkPhone(@Body() body: { phone_number: string }) {
+    const exists = await this.adminService.checkPhoneExists(body.phone_number);
+    return { exists }; // { exists: true/false }
+  }
 
 
   @Post('/loginAdmin')
-async loginSession(
-  @Body() body: adminLoginDto,
-  @Session() session
-) {
-  const { id, pass } = body;
+  async loginSession(
+    @Body() body: adminLoginDto,
+    @Session() session
+  ) {
+    const { id, pass } = body;
 
-  // loginSession either returns AdminEntity or throws HttpException
-  const admin = await this.adminService.loginSession(id, pass);
+    // loginSession either returns AdminEntity or throws HttpException
+    const admin = await this.adminService.loginSession(id, pass);
 
-  // Save admin ID in session
-  session.ID = admin.id;
-  console.log('Session Created:', session.ID);
+    // Save admin ID in session
+    session.ID = admin.id;
+    console.log('Session Created:', session.ID);
 
-  // Return admin info to frontend (name, profile picture)
-  return await this.adminService.getAdminWithPhotoUrl(admin);
-}
+    // Return admin info to frontend (name, profile picture)
+    return await this.adminService.getAdminWithPhotoUrl(admin);
+  }
 
 
   @Post('/logout')
@@ -208,14 +207,14 @@ async loginSession(
   //   return this.adminService.updateAdmin(id, name);
   // }
   @Delete('/deleteAdmin/:id')
-async deleteAdmin(@Param('id', ParseIntPipe) id: number): Promise<{ message: string }> {
-  const deleted = await this.adminService.deleteAdmin(id);
-  if (!deleted) {
-    return { message: `No admin found with ID ${id}` };
+  async deleteAdmin(@Param('id', ParseIntPipe) id: number): Promise<{ message: string }> {
+    const deleted = await this.adminService.deleteAdmin(id);
+    if (!deleted) {
+      return { message: `No admin found with ID ${id}` };
+    }
+    return { message: `Admin with ID ${id} deleted successfully` };
   }
-  return { message: `Admin with ID ${id} deleted successfully` };
-}
- 
+
   @Post('/addTeacher')
   @UsePipes(new ValidationPipe())
   addTeacher(@Body() teacherData: TeacherDto): object {
@@ -248,7 +247,7 @@ async deleteAdmin(@Param('id', ParseIntPipe) id: number): Promise<{ message: str
   // async getStudentByUsername(@Param('username') username: string) {
   //   return this.adminService.findByUsername(username);
   // }
-@Get('/getStudentbyname')
+  @Get('/getStudentbyname')
   async getAllStudentsbyName() {
     return this.adminService.getAllStudents();
   }
@@ -273,24 +272,24 @@ async deleteAdmin(@Param('id', ParseIntPipe) id: number): Promise<{ message: str
   getAllTeachersforupdate() {
     return this.adminService.getAllTeachersforupdate();
   }
-@Get('/getTeacher/:id')
-async getTeacher(@Param('id') id: number) {
-  return this.adminService.getTeacherById(id);
-}
-@Put('/updateTeacher/:id')
-async updateTeacher(
-  @Param('id', ParseIntPipe) id: number,
-  @Body() updateTeacherDto: any,
-) {
-  return this.adminService.updateTeacher(id, updateTeacherDto);
-}
+  @Get('/getTeacher/:id')
+  async getTeacher(@Param('id') id: number) {
+    return this.adminService.getTeacherById(id);
+  }
+  @Put('/updateTeacher/:id')
+  async updateTeacher(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateTeacherDto: any,
+  ) {
+    return this.adminService.updateTeacher(id, updateTeacherDto);
+  }
 
-@Get("getAdminsforup")
+  @Get("getAdminsforup")
   async getAllAdmins() {
     return this.adminService.getAllAdminsforup();
   }
 
-@Get('getAdminupdate/:id')
+  @Get('getAdminupdate/:id')
   async getAdminForUpdate(@Param('id', ParseIntPipe) id: number) {
     return this.adminService.getAdminByIdupdate(id);
   }
@@ -325,27 +324,27 @@ async updateTeacher(
   }
 
 
-@Get('getProfileImage/:id')
-async getProfileImage(@Param('id', ParseIntPipe) id: number) {
-  const admin = await this.adminService.getAdminByIdForImage(id);
+  @Get('getProfileImage/:id')
+  async getProfileImage(@Param('id', ParseIntPipe) id: number) {
+    const admin = await this.adminService.getAdminByIdForImage(id);
 
-  return {
-    profilePic: admin?.display_picture
-      ? `http://localhost:3000/${admin.display_picture}`
-      : '', // fallback to empty string if no image
-  };
-}
+    return {
+      profilePic: admin?.display_picture
+        ? `http://localhost:3000/${admin.display_picture}`
+        : '', // fallback to empty string if no image
+    };
+  }
 
-//   @Delete('/deleteAdmin/:username')
-// async deleteAdminByUsername(
-//   @Param('username') username: string
-// ): Promise<{ message: string }> {
-//   const deleted = await this.adminService.deleteAdminByUsername(username);
-//   if (!deleted) {
-//     return { message: `No admin found with username "${username}"` };
-//   }
-//   return { message: `Admin with username "${username}" deleted successfully` };
-// }
+  //   @Delete('/deleteAdmin/:username')
+  // async deleteAdminByUsername(
+  //   @Param('username') username: string
+  // ): Promise<{ message: string }> {
+  //   const deleted = await this.adminService.deleteAdminByUsername(username);
+  //   if (!deleted) {
+  //     return { message: `No admin found with username "${username}"` };
+  //   }
+  //   return { message: `Admin with username "${username}" deleted successfully` };
+  // }
 
   // @Post('/addTeacher/:adminid')
   // @UsePipes(new ValidationPipe)
@@ -434,29 +433,29 @@ async getProfileImage(@Param('id', ParseIntPipe) id: number) {
   //   return this.adminService.getStudentsWithCgpaRange(min, max);
   // }
   @Get('/getimage/:name')
-getImage(@Param('name')name,@Res() res){
-  
-    res.sendFile(name,{root:'./Uploads'})
-}
-@Get('getAdminById/:id')
-async getAdminById(@Param('id') id: number) {
-  const admin = await this.adminService.getAdminById(Number(id));
-  return this.adminService.getAdminWithPhotoUrl(admin);
-}
-@Get('/check-session')
-checkSession(@Session() session) {
-  if (session.ID) {
-    return { loggedIn: true, id: session.ID };
-  } else {
-    return { loggedIn: false };
+  getImage(@Param('name') name, @Res() res) {
+
+    res.sendFile(name, { root: './Uploads' })
   }
-}
-@Get('profile')
-@UseGuards(SessionGuard)
-async getProfile(@Session() session) {
-  const admin = await this.adminService.getAdminById(session.ID);
-  return this.adminService.getAdminWithPhotoUrl(admin);
-}
+  @Get('getAdminById/:id')
+  async getAdminById(@Param('id') id: number) {
+    const admin = await this.adminService.getAdminById(Number(id));
+    return this.adminService.getAdminWithPhotoUrl(admin);
+  }
+  @Get('/check-session')
+  checkSession(@Session() session) {
+    if (session.ID) {
+      return { loggedIn: true, id: session.ID };
+    } else {
+      return { loggedIn: false };
+    }
+  }
+  @Get('profile')
+  @UseGuards(SessionGuard)
+  async getProfile(@Session() session) {
+    const admin = await this.adminService.getAdminById(session.ID);
+    return this.adminService.getAdminWithPhotoUrl(admin);
+  }
 
 
 }
